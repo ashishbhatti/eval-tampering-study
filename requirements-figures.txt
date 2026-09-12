@@ -1,0 +1,2 @@
+# Standalone scientific figures from saved, checked analysis artifacts.
+matplotlib==3.11.1

@@ -1,0 +1,28 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/final-sampling-example/study/analysis",
+    "bootstrap_seed": 19,
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "manifest": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-sampling-example/study/manifests/manifest/manifest.json",
+      "sha256": "c0bf276e4b7754ed17f8997709101885cc9bd597d01967e89392f37e4efd9733"
+    },
+    "purpose": "behavior_audit",
+    "rule": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-sampling-example/study/analysis-rule.json",
+      "sha256": "ff9801d2bdea94d97ba533daeeaa6c4afa2c7b8ad8e273b4c8786d6e0fc9ca6c"
+    },
+    "sampling": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-sampling-example/study/analysis/verified-final-sampling/sampling-summary.json",
+      "sha256": "4c094ab9d5ef87a4138e2f08f41d1487b204950f466d173fd47e65f991c487c2"
+    }
+  },
+  "operation": "analysis.sample",
+  "request_id": "review-behavior_audit",
+  "schema_version": 1
+}

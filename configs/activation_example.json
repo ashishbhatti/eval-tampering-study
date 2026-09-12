@@ -1,0 +1,35 @@
+{
+  "config": {
+    "Cs": [
+      10,
+      1,
+      0.1
+    ],
+    "artifact_root": ".cache/review-completion-validation/examples-current/detection/monitors",
+    "label_kind": "fixture",
+    "layers": [
+      2,
+      1
+    ],
+    "poolings": [
+      "mean",
+      "last"
+    ],
+    "seed": 7
+  },
+  "inputs": {
+    "features": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/detection/features.json",
+      "sha256": "c33d8a1ccd99ca73ee313f04c28d74d157ef8ec04bbc27ce943fc24d5a0f2d6c"
+    },
+    "labels": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/detection/labels.json",
+      "sha256": "f10f07a324295c4d2499f21fbdaf5f017b505cb6c7bccceb261e5ef23984b427"
+    }
+  },
+  "operation": "activation.fit",
+  "request_id": "review-activation",
+  "schema_version": 1
+}

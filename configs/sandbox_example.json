@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "request_id": "sandbox-development-example",
+  "operation": "execute",
+  "config": {
+    "docker_executable": "docker",
+    "docker_host": "unix:///var/run/docker.sock",
+    "image": "python:3.14.7-slim@sha256:cad9a2c871761c413caa6fdd6441c783451e740a48aaeba60ae62a8b53525ef6",
+    "timeout_seconds": 5,
+    "memory_mb": 256,
+    "cpus": 1,
+    "pids_limit": 32,
+    "max_output_bytes": 65536,
+    "max_file_bytes": 1048576,
+    "max_snapshot_bytes": 8388608,
+    "artifact_root": ".cache/sandbox"
+  },
+  "inputs": {
+    "files": {
+      "solution.py": "def clamp(value, lower, upper):\n    return max(value, lower)\n",
+      "test_solution.py": "from solution import clamp\nassert clamp(12, 0, 10) == 10\n"
+    },
+    "snapshot": null,
+    "command": ["python", "-B", "test_solution.py"]
+  }
+}

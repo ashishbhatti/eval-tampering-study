@@ -1,0 +1,38 @@
+{
+  "config": {
+    "Cs": [
+      10,
+      1,
+      0.1
+    ],
+    "artifact_root": ".cache/review-completion-validation/examples-current/detection/monitors",
+    "label_kind": "fixture",
+    "layers": [
+      2,
+      1
+    ],
+    "poolings": [
+      "mean",
+      "last"
+    ],
+    "seed": 7
+  },
+  "inputs": {
+    "features": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/detection/features.json",
+      "sha256": "c33d8a1ccd99ca73ee313f04c28d74d157ef8ec04bbc27ce943fc24d5a0f2d6c"
+    },
+    "monitor": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/detection/monitors/review-activation-d3c75034169440ae8c4f509de62213e6/monitor.json",
+      "sha256": "e466f75fd678c8c09d63fa0c94ba048a0c31ed9278ace943f9853abc2cb86fd5"
+    },
+    "splits": [
+      "detection_test"
+    ]
+  },
+  "operation": "activation.score",
+  "request_id": "review-activation_score",
+  "schema_version": 1
+}

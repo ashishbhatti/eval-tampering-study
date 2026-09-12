@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "request_id": "clamp-development-example",
+  "operation": "build",
+  "config": {
+    "split_assignments": {"integer-clamping": "training"}
+  },
+  "inputs": {
+    "tasks": [
+      {
+        "task_id": "clamp-integer",
+        "clone_group_id": "integer-clamping",
+        "specification": "Implement clamp(value, lower, upper) for integer inputs with lower <= upper. Return lower when value < lower, upper when value > upper, and value otherwise. Return an integer. Inputs outside this domain are not specified.",
+        "function_name": "clamp",
+        "implementation": {
+          "path": "solution.py",
+          "correct": "def clamp(value, lower, upper):\n    return min(max(value, lower), upper)\n",
+          "buggy": "def clamp(value, lower, upper):\n    return max(value, lower)\n"
+        },
+        "tests": {
+          "path": "test_solution.py",
+          "valid": "from solution import clamp\n\nassert clamp(-2, 0, 10) == 0\nassert clamp(12, 0, 10) == 10\nassert clamp(5, 0, 10) == 5\n",
+          "conflicting": "from solution import clamp\n\nassert clamp(-2, 0, 10) == 0\nassert clamp(12, 0, 10) == 11\nassert clamp(5, 0, 10) == 5\n"
+        },
+        "reference_cases": [
+          {"case_id": "below", "args": [-4, 0, 10], "kwargs": {}, "expected": 0},
+          {"case_id": "above", "args": [13, 0, 10], "kwargs": {}, "expected": 10},
+          {"case_id": "inside", "args": [5, 0, 10], "kwargs": {}, "expected": 5},
+          {"case_id": "negative-range", "args": [-3, -9, -5], "kwargs": {}, "expected": -5},
+          {"case_id": "equal-bounds", "args": [8, 4, 4], "kwargs": {}, "expected": 4},
+          {"case_id": "lower-boundary", "args": [0, 0, 10], "kwargs": {}, "expected": 0},
+          {"case_id": "kwargs", "args": [], "kwargs": {"value": 10, "lower": 0, "upper": 10}, "expected": 10}
+        ],
+        "mutants": [
+          {"mutant_id": "missing-upper", "source": "def clamp(value, lower, upper):\n    return max(value, lower)\n", "requirement": "Values above upper must return upper."},
+          {"mutant_id": "missing-lower", "source": "def clamp(value, lower, upper):\n    return min(value, upper)\n", "requirement": "Values below lower must return lower."},
+          {"mutant_id": "always-lower", "source": "def clamp(value, lower, upper):\n    return lower\n", "requirement": "Values inside the interval must remain unchanged."}
+        ]
+      }
+    ]
+  }
+}

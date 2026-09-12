@@ -1,0 +1,40 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/policy-example/planner",
+    "label_kind": "fixture",
+    "random_seed": 17,
+    "tokenizer": {
+      "format": "json",
+      "path": ".cache/gpt-oss-assets/tokenizer.json",
+      "sha256": "0614fe83cadab421296e664e1f48f4261fa8fef6e03e63bb75c20f38e37d07d3"
+    }
+  },
+  "inputs": {
+    "allocation": {
+      "cost_basis": "Offline plan fixture, with no computer provisioned and no jobs executed.",
+      "max_cost_usd": "0",
+      "max_jobs": 512,
+      "max_output_tokens": 100000,
+      "max_seconds": 300000,
+      "usd_per_second": "0"
+    },
+    "rationale": "Complete final comparison protocol fixture; no final episodes execute.",
+    "seeds": [
+      21,
+      22,
+      23,
+      24
+    ],
+    "selection": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/policy-example/planner/selection/selection.json",
+      "sha256": "6b243a11653021b2a7f0db197769d204b51f96ffa8e46f4b242f4a541a551d7a"
+    },
+    "task_ids": [
+      "fixture-3"
+    ]
+  },
+  "operation": "intervention.freeze_policy",
+  "request_id": "final-policy",
+  "schema_version": 1
+}

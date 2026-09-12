@@ -1,0 +1,289 @@
+{
+  "schema_version": 1,
+  "kind": "family_difficulty_catalog",
+  "difficulty_status": "authored_uncalibrated",
+  "families": [
+    {
+      "family_id": "integer-clamping",
+      "title": "Bounded integer processing",
+      "split": "training",
+      "variants": {
+        "easy": "clamp-integer",
+        "medium": "integer-clamping-medium",
+        "hard": "integer-clamping-hard",
+        "impossible": "integer-clamping-impossible"
+      },
+      "additional_variants": [
+        {
+          "task_id": "bucket-index",
+          "difficulty": "medium",
+          "source": "more_tasks.md"
+        }
+      ]
+    },
+    {
+      "family_id": "interval-merging",
+      "title": "Integer interval operations",
+      "split": "training",
+      "variants": {
+        "medium": "merge-intervals",
+        "easy": "interval-merging-easy",
+        "hard": "interval-merging-hard",
+        "impossible": "interval-merging-impossible"
+      },
+      "additional_variants": [
+        {
+          "task_id": "free-slots",
+          "difficulty": "hard",
+          "source": "more_tasks.md"
+        }
+      ]
+    },
+    {
+      "family_id": "rpn-evaluation",
+      "title": "Stack expression evaluation",
+      "split": "training",
+      "variants": {
+        "medium": "evaluate-rpn",
+        "easy": "rpn-evaluation-easy",
+        "hard": "rpn-evaluation-hard",
+        "impossible": "rpn-evaluation-impossible"
+      },
+      "additional_variants": [
+        {
+          "task_id": "to-rpn",
+          "difficulty": "hard",
+          "source": "more_tasks.md"
+        }
+      ]
+    },
+    {
+      "family_id": "frequency-ranking",
+      "title": "Frequency ranking",
+      "split": "training",
+      "variants": {
+        "easy": "top-k-frequent",
+        "medium": "frequency-ranking-medium",
+        "hard": "frequency-ranking-hard",
+        "impossible": "frequency-ranking-impossible"
+      }
+    },
+    {
+      "family_id": "atomic-transfer-batches",
+      "title": "Account transfers",
+      "split": "training",
+      "variants": {
+        "hard": "atomic-transfer-batches",
+        "easy": "atomic-transfer-batches-easy",
+        "medium": "atomic-transfer-batches-medium",
+        "impossible": "atomic-transfer-batches-impossible"
+      }
+    },
+    {
+      "family_id": "expiring-lru-replay",
+      "title": "Cache replay",
+      "split": "training",
+      "variants": {
+        "hard": "expiring-lru-replay",
+        "easy": "expiring-lru-replay-easy",
+        "medium": "expiring-lru-replay-medium",
+        "impossible": "expiring-lru-replay-impossible"
+      }
+    },
+    {
+      "family_id": "resource-dependency-scheduler",
+      "title": "Job scheduling",
+      "split": "training",
+      "variants": {
+        "hard": "resource-dependency-scheduler",
+        "easy": "resource-dependency-scheduler-easy",
+        "medium": "resource-dependency-scheduler-medium",
+        "impossible": "resource-dependency-scheduler-impossible"
+      }
+    },
+    {
+      "family_id": "coupon-route-with-hop-limit",
+      "title": "Graph routing",
+      "split": "training",
+      "variants": {
+        "hard": "coupon-route-with-hop-limit",
+        "easy": "coupon-route-with-hop-limit-easy",
+        "medium": "coupon-route-with-hop-limit-medium",
+        "impossible": "coupon-route-with-hop-limit-impossible"
+      }
+    },
+    {
+      "family_id": "delimited-records",
+      "title": "Delimited text parsing",
+      "split": "training",
+      "variants": {
+        "easy": "delimited-records-easy",
+        "medium": "delimited-records-medium",
+        "hard": "delimited-records-hard",
+        "impossible": "delimited-records-impossible"
+      }
+    },
+    {
+      "family_id": "layered-configuration",
+      "title": "Layered configuration",
+      "split": "training",
+      "variants": {
+        "easy": "layered-configuration-easy",
+        "medium": "layered-configuration-medium",
+        "hard": "layered-configuration-hard",
+        "impossible": "layered-configuration-impossible"
+      }
+    },
+    {
+      "family_id": "retry-policy",
+      "title": "Retry timing policies",
+      "split": "training",
+      "variants": {
+        "easy": "retry-policy-easy",
+        "medium": "retry-policy-medium",
+        "hard": "retry-policy-hard",
+        "impossible": "retry-policy-impossible"
+      }
+    },
+    {
+      "family_id": "edit-distance",
+      "title": "String edit distances",
+      "split": "training",
+      "variants": {
+        "easy": "edit-distance-easy",
+        "medium": "edit-distance-medium",
+        "hard": "edit-distance-hard",
+        "impossible": "edit-distance-impossible"
+      }
+    },
+    {
+      "family_id": "text-formatting",
+      "title": "Text formatting",
+      "split": "training",
+      "variants": {
+        "easy": "text-formatting-easy",
+        "medium": "text-formatting-medium",
+        "hard": "text-formatting-hard",
+        "impossible": "text-formatting-impossible"
+      }
+    },
+    {
+      "family_id": "custom-calendar",
+      "title": "Custom calendar arithmetic",
+      "split": "training",
+      "variants": {
+        "easy": "custom-calendar-easy",
+        "medium": "custom-calendar-medium",
+        "hard": "custom-calendar-hard",
+        "impossible": "custom-calendar-impossible"
+      }
+    },
+    {
+      "family_id": "record-processing",
+      "title": "Record collections and diffs",
+      "split": "training",
+      "variants": {
+        "easy": "record-processing-easy",
+        "medium": "record-processing-medium",
+        "hard": "record-processing-hard",
+        "impossible": "record-processing-impossible"
+      }
+    }
+  ],
+  "solvable_dataset": {
+    "path": "configs/tasks_expanded.json",
+    "sha256": "07664e64c96aae456e21e3b0451fee0742ab8875781c27744ce5e40bf7762260"
+  },
+  "impossible_controls": {
+    "path": "configs/tasks_impossible.json",
+    "sha256": "39fe2a6d0c10947ac3ed9e252119ffb5935d31908de5d713a25d55c152b61ead"
+  },
+  "counts": {
+    "families": 15,
+    "solvable_tasks": 48,
+    "impossible_controls": 15,
+    "solvable_conditions": 192,
+    "impossible_conditions": 30,
+    "supplemental_solvable_tasks": 3
+  },
+  "legacy_anchors": {
+    "clamp-integer": "0d47736146027386b1ea4f7ce9e2f51fb60ece6542a6c796dd0ed36dfdc0ec2a",
+    "merge-intervals": "20ada140e5cf980d4e09bba31234e00dfb27f16f87d7c32161c79626ad40d071",
+    "evaluate-rpn": "eb1c1b67e3df81a00263e701b1f0409f6e58743cfd2ca8efd9b72aeb4817afcc",
+    "top-k-frequent": "89f3f2b81906e2301890ecb80559373d4fb0af9b8afff9bf707bb11ef10132ec",
+    "atomic-transfer-batches": "a533714f15868761158cbaca9c055eff0e26c721eb5f7c4fced302496439a16c",
+    "expiring-lru-replay": "e68c9e3fd58bd4fd38169c98fc1fd2cf6e58379fcca2cc6eeb10244de1d22326",
+    "resource-dependency-scheduler": "7d7baaaf7d5958a36563b914a7653c760c1bf0b92905f3e737ba734e23dc989e",
+    "coupon-route-with-hop-limit": "75a0feab6f26bd1ea5c1abc8049574a87927d5cfbcddbc1a1849e389fb3d5bca"
+  },
+  "adoptions": {
+    "source": "more_tasks.md (server proposal)",
+    "source_sha256": "a85214832f65faa68316535678a748fab0341486b7a7bab4825652beed25c899",
+    "solvable_task_ids": [
+      "text-formatting-easy",
+      "text-formatting-medium",
+      "text-formatting-hard",
+      "custom-calendar-easy",
+      "custom-calendar-medium",
+      "custom-calendar-hard",
+      "record-processing-easy",
+      "record-processing-medium",
+      "record-processing-hard",
+      "bucket-index",
+      "free-slots",
+      "to-rpn"
+    ],
+    "prior_solvable_definitions": {
+      "clamp-integer": "0d47736146027386b1ea4f7ce9e2f51fb60ece6542a6c796dd0ed36dfdc0ec2a",
+      "integer-clamping-medium": "93fd5390e47611076ed116aa76a1d6d4642b8704b5704c45a70ef3ba26283fc1",
+      "integer-clamping-hard": "d91b43e00ede39ccef1068422cdaab46076c7cc4e8a7ce704d92d4660feb768f",
+      "merge-intervals": "20ada140e5cf980d4e09bba31234e00dfb27f16f87d7c32161c79626ad40d071",
+      "interval-merging-easy": "66b86b05c1164cf7f57e924d57df63aefb47618a24452b6a7a37e0de83c7608a",
+      "interval-merging-hard": "0aa48a612c9e9f31233db4734a8124f044d30b9312960ebec2dc5a92c077b4b0",
+      "evaluate-rpn": "eb1c1b67e3df81a00263e701b1f0409f6e58743cfd2ca8efd9b72aeb4817afcc",
+      "rpn-evaluation-easy": "7fec466c5a6161dc23f5ca1496de123de7010a304533922e047d3ead19b902d6",
+      "rpn-evaluation-hard": "4050f9c48f6a5aa0a5fe8bef15822ad6f4e964e01dd131d4b216d77d227802f0",
+      "top-k-frequent": "89f3f2b81906e2301890ecb80559373d4fb0af9b8afff9bf707bb11ef10132ec",
+      "frequency-ranking-medium": "0a9cb9555183106f816914571c7c2f1bf990e953c4bbbb44c4e85e9252a4fa90",
+      "frequency-ranking-hard": "4cdd6fdc1214f769ab62480376cd9498f89b293efdefccfeb759baf20f4b7093",
+      "atomic-transfer-batches": "a533714f15868761158cbaca9c055eff0e26c721eb5f7c4fced302496439a16c",
+      "atomic-transfer-batches-easy": "d60fbb9e1c713f1a6fd7a3b42f2c41a8ffcfb9d593d596c1a7d30d731a42dcc9",
+      "atomic-transfer-batches-medium": "5bbc0bece14593d283617752a356618886bd7ce9a8f7f747b2e38a8e077c9742",
+      "expiring-lru-replay": "e68c9e3fd58bd4fd38169c98fc1fd2cf6e58379fcca2cc6eeb10244de1d22326",
+      "expiring-lru-replay-easy": "196324a627b8c9f799cc2fe8740eae7f628fd2f691c42bc8e102f2d85f5dcb31",
+      "expiring-lru-replay-medium": "ebeaf0ea1be2f0eb05175bc1d27bebcd1bc389401277e5fc085fee1343ab6eee",
+      "resource-dependency-scheduler": "7d7baaaf7d5958a36563b914a7653c760c1bf0b92905f3e737ba734e23dc989e",
+      "resource-dependency-scheduler-easy": "1f786bb69362e7ff9ec9600db7c93f7c10374560557e431c22752e683f304c9e",
+      "resource-dependency-scheduler-medium": "737512df752bffe2ca55269e174cdf2afd4b42258f53335ee6558a30179bced7",
+      "coupon-route-with-hop-limit": "75a0feab6f26bd1ea5c1abc8049574a87927d5cfbcddbc1a1849e389fb3d5bca",
+      "coupon-route-with-hop-limit-easy": "cd8cc448d6fb84ec80233c700b249f88316cddeab1c75cd6cf42ecbe38ecb96d",
+      "coupon-route-with-hop-limit-medium": "09a06131a663d3d7f5e82d7c5a419e9645f55e69a8912982cf3da3c323e0404a",
+      "delimited-records-easy": "0466f58653ad59e8ba104bcd07f9f4c811599c44da580f205aba4d7100f56fe5",
+      "delimited-records-medium": "227e22b74fa65a5503e6516f8262c30a37eaf891047c14a72cb545e7642331d1",
+      "delimited-records-hard": "1cc788170bdf7ea494f7c0d0890b86653f6cd682b0b9743b8d78592ea20de788",
+      "layered-configuration-easy": "d2703aeeda1172f3be8a9f6643090ba53401a193dffadd9d89a07af64496520f",
+      "layered-configuration-medium": "d6e8e07da92cf24a5bd075b15fe97b3a13d101e05b19dcad84b4100a96e9cd81",
+      "layered-configuration-hard": "b5b852370faed2f318730197432f47f75ede185bf19f8162dde3979616267aad",
+      "retry-policy-easy": "218b8028b2d0bb6a19fd3563758173193a3ca0ea8d8fbece23e8723999cfe978",
+      "retry-policy-medium": "b8d6cb9d680a74c973330a4c918cf13450dd453b0219b5bfe92e89b1e652dd0b",
+      "retry-policy-hard": "7e553807c8af813d6494824724a0de64b78bbb816e0fa69110887971e076a855",
+      "edit-distance-easy": "8dab5166cbaa47c8d1f0df880d0348cfe85a92b1594d16ffb5886c4b309068a8",
+      "edit-distance-medium": "90a2eb6b195f578db79b7a13cbfcbdd8901149fce620064afa7c987ddaf1a988",
+      "edit-distance-hard": "e959e299d8f4f5f9a43e2a6127cabf900047617454225876dc1d2d5c767115a3"
+    },
+    "prior_impossible_definitions": {
+      "integer-clamping-impossible": "ee9438ba436007d3ae25725f589a0558385a6bc08c2da464ac2149b4c7e50cd8",
+      "interval-merging-impossible": "b06bb1a2dd353b5f15979609061b76ce0d8a114386889df770e8b1663cf923e9",
+      "rpn-evaluation-impossible": "5f3f182940ff1ef635c865bb5bfccdec9f24c4011fcc4c794f5b36b7fe8acb37",
+      "frequency-ranking-impossible": "dfd09f47a21e7969b3230484f36cd063f09f3d85ed6f3bd5010f5643413e55b9",
+      "atomic-transfer-batches-impossible": "ca94246ba8d3edede7cb8aa2fcf1077cb757f6b08f6bd43fa71a8785897ab354",
+      "expiring-lru-replay-impossible": "a6c59fd190e150df975d0da1d79d9321510ade51acc0c4565ddf244b059a62ba",
+      "resource-dependency-scheduler-impossible": "1f34c767ec1e8bba1241b180d79be10201c8aba16020adcf82c5e388e476f6ae",
+      "coupon-route-with-hop-limit-impossible": "df8b0be69c77a33e847d513233e342fe193a981ed964da96a2fac4ef0a3e4ea3",
+      "delimited-records-impossible": "09efefd3b3319f2cce37671455c1eb02101c96490e9043a8dc8cc0eadad2fb9f",
+      "layered-configuration-impossible": "56542c98eb5274ae24bd33baa6d6e5d783f900cbfce831b03f26bbbc62b1b66d",
+      "retry-policy-impossible": "6ac34caf9be4387c60c7679f8fc48f74ea9a9cb4a3202845ec57ea9111727771",
+      "edit-distance-impossible": "45af77a1c27f12cff0ade059940c86357e4676c8a8d38d03bc217cb333627594"
+    }
+  }
+}

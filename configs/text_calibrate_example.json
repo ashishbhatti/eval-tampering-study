@@ -1,0 +1,32 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/text/text",
+    "label_kind": "fixture",
+    "provider": null,
+    "tokenizer": {
+      "format": "json",
+      "path": ".cache/gpt-oss-assets/tokenizer.json",
+      "sha256": "0614fe83cadab421296e664e1f48f4261fa8fef6e03e63bb75c20f38e37d07d3"
+    }
+  },
+  "inputs": {
+    "features": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/text/features.json",
+      "sha256": "f07733021bd86173333f45ca5b65e8938a05085051582f5ee6b568c717037ef5"
+    },
+    "labels": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/text/labels.json",
+      "sha256": "ff41c8256a7d65686513d6b5c21d0485bc2f41011e9db31f3eadc5d980c51cf6"
+    },
+    "scores": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/text/text/review-text/scores.json",
+      "sha256": "c674165674778b9beeb49ece3ec10b5aa83b158b0a551059222b21bd46028e5a"
+    }
+  },
+  "operation": "text.calibrate",
+  "request_id": "review-text_calibrate",
+  "schema_version": 1
+}

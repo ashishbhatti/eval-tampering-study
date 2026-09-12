@@ -1,0 +1,10 @@
+#!/usr/local/bin/python
+"""Invoke the unmodified upstream parser, reporting failures as nonzero exits."""
+import sys
+sys.path.insert(0, '/opt/mats-patch')
+from apply_patch import apply_patch, DiffError
+
+try:
+    print(apply_patch(sys.stdin.read()))
+except (DiffError, OSError, UnicodeError) as exc:
+    sys.exit(str(exc))

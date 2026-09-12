@@ -1,0 +1,19 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/runtime-check-example/records",
+    "max_context_tokens": 512,
+    "model_path": ".cache/gpt-oss-assets",
+    "profile": "tiny-gpt-oss-cpu"
+  },
+  "inputs": {
+    "date": "2026-09-10",
+    "layer": 1,
+    "max_new_tokens": 4,
+    "max_seconds": 120,
+    "seed": 7,
+    "strength": 0.25
+  },
+  "operation": "benign_control",
+  "request_id": "review-model_benign_control",
+  "schema_version": 1
+}

@@ -1,0 +1,52 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/detection/analysis",
+    "bootstrap_seed": 19,
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "activation": {
+      "monitor": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/detection/probe/monitor.json",
+        "sha256": "a5f4e81238e4c11fef57e22cb8a741928bd568e7d9795cbdfc644fb9e599b255"
+      },
+      "scores": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/detection/activation-scores.json",
+        "sha256": "105af99c4eabe8878c122f5edaafdf1f8370bac7f1a0bd872b4e15ecfbdc0dce"
+      }
+    },
+    "features": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/detection/features.json",
+      "sha256": "c33d8a1ccd99ca73ee313f04c28d74d157ef8ec04bbc27ce943fc24d5a0f2d6c"
+    },
+    "labels": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/detection/labels.json",
+      "sha256": "f10f07a324295c4d2499f21fbdaf5f017b505cb6c7bccceb261e5ef23984b427"
+    },
+    "rule": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/detection/analysis/review-analysis_rule/rule.json",
+      "sha256": "515fe6497d487fb3966bdaf70e32c13700eb4768a52f0aba33261cecfa0f1099"
+    },
+    "split": "detection_test",
+    "text": {
+      "calibration": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/detection/text-calibration.json",
+        "sha256": "4a0601d2a7cb7dd5c03feab3c7be01a0688a9be5eac5da679caf676742cf5c23"
+      },
+      "scores": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/detection/text-test/scores.json",
+        "sha256": "8b950d897b356738c064187d668f961f7faf69bff8bc68d995d8e03761c4a3ba"
+      }
+    }
+  },
+  "operation": "analysis.summarize",
+  "request_id": "review-analysis",
+  "schema_version": 1
+}

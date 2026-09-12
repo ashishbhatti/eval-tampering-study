@@ -1,0 +1,34 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/final-intervention-example/study/analysis",
+    "bootstrap_seed": 19,
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "final": {
+      "acceptance": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-intervention-example/study/manifests/accepted-fixture/acceptance.json",
+        "sha256": "4a1f6a9cbb2e8921e62fc54228e9468bdb688c55dea8b81748552fd9310ea5f0"
+      }
+    },
+    "outcomes": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-intervention-example/steering-outcomes.json",
+      "sha256": "bcd498b3d0c12acbf6aa12e5eaf690e374df6ed19726a98c10a7b2b544f962eb"
+    },
+    "plan": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-intervention-example/study/manifests/manifest/manifest.json",
+      "sha256": "a7b304852cca4ec52d7f32bb22a044d2e0f77d13b7f5bf18321d80b007072066"
+    },
+    "rule": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-intervention-example/study/analysis-rule.json",
+      "sha256": "6d0d2dde8ede05b626101212e8823bb197aba786b55e2166f96df04048312ced"
+    }
+  },
+  "operation": "analysis.steering",
+  "request_id": "steering_analysis-copy",
+  "schema_version": 1
+}

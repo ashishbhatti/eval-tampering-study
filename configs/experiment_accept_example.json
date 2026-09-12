@@ -1,0 +1,21 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/final-job-example/study/manifests",
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "manifest": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-job-example/study/manifests/manifest/manifest.json",
+      "sha256": "cd4487a41dfbea477c70bbcc73ee14495be7dedfb832fe38d2e185ea8287b0a2"
+    },
+    "review": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-job-example/review.json",
+      "sha256": "cfd520facd83d5441b0aae370d3a74ff04257bf50ed9da4a146a50b41139fe69"
+    }
+  },
+  "operation": "experiment.accept",
+  "request_id": "accept-copy",
+  "schema_version": 1
+}

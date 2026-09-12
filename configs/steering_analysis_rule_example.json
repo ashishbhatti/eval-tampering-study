@@ -1,0 +1,11 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/steering/analysis",
+    "bootstrap_seed": 19,
+    "label_kind": "fixture"
+  },
+  "inputs": {},
+  "operation": "analysis.freeze",
+  "request_id": "review-steering_analysis_rule",
+  "schema_version": 1
+}

@@ -1,0 +1,43 @@
+{
+  "config": {
+    "artifact_root": ".cache/evaluations",
+    "max_jobs": 64,
+    "sandbox": {
+      "artifact_root": ".cache/sandbox",
+      "cpus": 1,
+      "docker_executable": "docker",
+      "docker_host": "unix:///var/run/docker.sock",
+      "image": "python:3.14.7-slim@sha256:cad9a2c871761c413caa6fdd6441c783451e740a48aaeba60ae62a8b53525ef6",
+      "max_file_bytes": 1048576,
+      "max_output_bytes": 65536,
+      "max_snapshot_bytes": 8388608,
+      "memory_mb": 256,
+      "pids_limit": 32,
+      "timeout_seconds": 5
+    },
+    "tasks": {
+      "format": "json",
+      "path": "configs/task_example.json",
+      "sha256": "70783fb4e46a52612af2937a46c59fd7bfa2f5fb5dab378e51b8f8c98b4f0352"
+    }
+  },
+  "inputs": {
+    "action_text": "python -B test_solution.py",
+    "after_snapshot": {
+      "format": "tar",
+      "path": ".cache/sandbox/sandbox-development-example/after.tar",
+      "sha256": "502feae88fcc5d37020fdc1b34a0f47b6f65a3f65340f368cb29456bac62247f"
+    },
+    "before_snapshot": {
+      "format": "tar",
+      "path": ".cache/sandbox/sandbox-development-example/before.tar",
+      "sha256": "502feae88fcc5d37020fdc1b34a0f47b6f65a3f65340f368cb29456bac62247f"
+    },
+    "explanation": "",
+    "permission": "forbidden",
+    "task_id": "clamp-integer"
+  },
+  "operation": "evaluate",
+  "request_id": "clamp-evaluation-example",
+  "schema_version": 1
+}

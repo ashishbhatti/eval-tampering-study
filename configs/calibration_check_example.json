@@ -1,0 +1,32 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/policy-example/planner",
+    "label_kind": "fixture",
+    "random_seed": 17,
+    "tokenizer": {
+      "format": "json",
+      "path": ".cache/gpt-oss-assets/tokenizer.json",
+      "sha256": "0614fe83cadab421296e664e1f48f4261fa8fef6e03e63bb75c20f38e37d07d3"
+    }
+  },
+  "inputs": {
+    "diagnostics": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/policy-example/diagnostics.json",
+      "sha256": "f930e481fb233a8e2f616f66855ac1a80f05f10b7eb1a7198858305c9d134f55"
+    },
+    "outcomes": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/policy-example/calibration-outcomes.json",
+      "sha256": "0570811310c71507e6d36f9271b27f2802080c7f129962caca5126d09874ffc3"
+    },
+    "plan": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/policy-example/planner/numerical-plan/calibration-plan.json",
+      "sha256": "5a8fa9ed2f230bcdb3241cc6e937040eb8e77bb2ea5c929d743a6fb013da5c90"
+    }
+  },
+  "operation": "intervention.check_calibration",
+  "request_id": "numerical-check",
+  "schema_version": 1
+}

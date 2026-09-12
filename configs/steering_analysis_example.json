@@ -1,0 +1,27 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/steering/analysis",
+    "bootstrap_seed": 19,
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "outcomes": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/steering/outcomes.json",
+      "sha256": "bf754eb4ac1f7500620256b1fe96303d4c47fc7921e7923bcc7af832569cb499"
+    },
+    "plan": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/steering/planner/plan/steering-plan.json",
+      "sha256": "621e06a16c14ea24b0a142b3a9c9bc627723e50ae4d1a1e617e9ed9d18f9b74b"
+    },
+    "rule": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/steering/analysis/review-steering_analysis_rule/rule.json",
+      "sha256": "690507b011452167d9745678b61094bcad847473dd73912fa57a4efe57b917bf"
+    }
+  },
+  "operation": "analysis.steering",
+  "request_id": "review-steering_analysis",
+  "schema_version": 1
+}

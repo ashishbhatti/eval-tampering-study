@@ -1,0 +1,18 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/final-job-example/study/manifests",
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "acceptance": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-job-example/study/manifests/example-accept/acceptance.json",
+      "sha256": "8b9cf194549c736313b7e84fa695129b2017aa842dfc2b648ab549e7b6a46751"
+    },
+    "job_id": "01f30fdcff1d073bda3e7d9214eeb5fb",
+    "phase": "sampling"
+  },
+  "operation": "experiment.job",
+  "request_id": "job-copy",
+  "schema_version": 1
+}

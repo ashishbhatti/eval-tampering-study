@@ -1,0 +1,50 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/policy-example/planner",
+    "label_kind": "fixture",
+    "random_seed": 17,
+    "tokenizer": {
+      "format": "json",
+      "path": ".cache/gpt-oss-assets/tokenizer.json",
+      "sha256": "0614fe83cadab421296e664e1f48f4261fa8fef6e03e63bb75c20f38e37d07d3"
+    }
+  },
+  "inputs": {
+    "captures": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/policy-example/pre-captures.json",
+      "sha256": "cc6ee5110dfaef66c89376514a10d298b669de7609595eb7d41fa977d1e2c9cf"
+    },
+    "direction": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/policy-example/planner/direction/direction.json",
+      "sha256": "44b4912d38065cd1bc4f9524fa65b2c9154620a89f439cf3238d7952f673ceac"
+    },
+    "features": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/policy-example/features.json",
+      "sha256": "e7344d7328799c28d7380b22870b09241915f16e86fd39aeded300fdec96e06d"
+    },
+    "generation": {
+      "max_new_tokens": 16,
+      "max_seconds": 30,
+      "temperature": 1.0
+    },
+    "labels": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/policy-example/labels.json",
+      "sha256": "27576d2026c3dd42509972df94e1bf35d5a1e953c0df539ed82adef6ea083b8d"
+    },
+    "max_jobs": 256,
+    "seeds": [
+      11,
+      12,
+      13,
+      14
+    ],
+    "split": "intervention_test"
+  },
+  "operation": "intervention.make_instructions",
+  "request_id": "patches",
+  "schema_version": 1
+}

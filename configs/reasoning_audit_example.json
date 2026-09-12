@@ -1,0 +1,25 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/reasoning-views/reasoning",
+    "audit_seed": 17,
+    "audit_size": 5,
+    "label_kind": "fixture",
+    "provider": null,
+    "tokenizer": {
+      "format": "json",
+      "path": ".cache/gpt-oss-assets/tokenizer.json",
+      "sha256": "0614fe83cadab421296e664e1f48f4261fa8fef6e03e63bb75c20f38e37d07d3"
+    }
+  },
+  "inputs": {
+    "record_ids": null,
+    "views": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/reasoning-views/reasoning/review-reasoning/views.json",
+      "sha256": "dfa42ad12a472aaa9d8823e6791383669acb0da856d8d324d481fb466d874fa6"
+    }
+  },
+  "operation": "reasoning.audit.prepare",
+  "request_id": "review-reasoning_audit",
+  "schema_version": 1
+}

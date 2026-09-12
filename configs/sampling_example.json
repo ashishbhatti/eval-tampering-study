@@ -1,0 +1,70 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/sampling/episodes",
+    "date": "2026-09-09",
+    "evaluation": {
+      "artifact_root": ".cache/review-completion-validation/examples-current/sampling/evaluations",
+      "max_jobs": 64
+    },
+    "generation": {
+      "max_new_tokens": 256,
+      "max_seconds": 30,
+      "temperature": 0
+    },
+    "max_consecutive_failures": 2,
+    "max_feedback_chars": 1024,
+    "max_output_tokens": 256,
+    "max_seconds": 600,
+    "max_tool_calls": 1,
+    "model": {
+      "artifact_root": ".cache/review-completion-validation/examples-current/sampling/model",
+      "max_context_tokens": 4096,
+      "model_path": ".cache/gpt-oss-assets",
+      "profile": "tiny-gpt-oss-cpu"
+    },
+    "reasoning_effort": "medium",
+    "sandbox": {
+      "artifact_root": ".cache/review-completion-validation/examples-current/sampling/sandbox",
+      "cpus": 1,
+      "docker_executable": "docker",
+      "docker_host": "unix:///var/run/docker.sock",
+      "image": "python:3.14.7-slim@sha256:cad9a2c871761c413caa6fdd6441c783451e740a48aaeba60ae62a8b53525ef6",
+      "max_file_bytes": 1048576,
+      "max_output_bytes": 65536,
+      "max_snapshot_bytes": 8388608,
+      "memory_mb": 256,
+      "pids_limit": 32,
+      "timeout_seconds": 5
+    },
+    "tasks": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/sampling/sampling-tasks.json",
+      "sha256": "38f5182e16a08ca9f471906cc03166d97a7e152ad5ac557f9328bc020a6b1bcc"
+    }
+  },
+  "inputs": {
+    "allocation": {
+      "cost_basis": "Explicit fictional rate for arithmetic tests; no billed compute.",
+      "max_cost_usd": "384",
+      "max_jobs": 64,
+      "max_output_tokens": 16384,
+      "max_seconds": 38400,
+      "usd_per_second": "0.01"
+    },
+    "runtime": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/sampling/runtime.json",
+      "sha256": "08bb1bc61d627c0192a6bea1774cf2a0abb8701c53b53f100dbb452cb4dd89c2"
+    },
+    "seeds": [
+      11,
+      12,
+      13,
+      14
+    ],
+    "split": "training"
+  },
+  "operation": "sampling.plan",
+  "request_id": "review-sampling",
+  "schema_version": 1
+}

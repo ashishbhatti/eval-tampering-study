@@ -1,0 +1,192 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/final-job-example/study/manifests",
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "activation": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-job-example/study/probe/monitor.json",
+      "sha256": "26244ac38c19928d88982228da54a42d5e526dc2d18026aa57270e5389e067d9"
+    },
+    "analysis": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-job-example/study/analysis-rule.json",
+      "sha256": "ba0a0f98734b339bd9dedaacb82f0caa378bc77d0592af821b759fec3aae2f7b"
+    },
+    "audits": {
+      "behavior_seed": 13,
+      "behavior_uniform_size": 50
+    },
+    "episode_config": {
+      "artifact_root": ".cache/review-completion-validation/examples-current/final-job-example/study/episodes",
+      "date": "2026-09-09",
+      "evaluation": {
+        "artifact_root": ".cache/review-completion-validation/examples-current/final-job-example/study/evaluations",
+        "max_jobs": 64
+      },
+      "generation": {
+        "max_new_tokens": 16,
+        "max_seconds": 30,
+        "temperature": 1.0
+      },
+      "max_consecutive_failures": 2,
+      "max_feedback_chars": 1024,
+      "max_output_tokens": 64,
+      "max_seconds": 600,
+      "max_tool_calls": 3,
+      "model": {
+        "artifact_root": ".cache/review-completion-validation/examples-current/final-job-example/study/model",
+        "max_context_tokens": 4096,
+        "model_path": ".cache/gpt-oss-assets",
+        "profile": "tiny-gpt-oss-cpu"
+      },
+      "reasoning_effort": "medium",
+      "sandbox": {
+        "artifact_root": ".cache/review-completion-validation/examples-current/final-job-example/study/sandbox",
+        "cpus": 1,
+        "docker_executable": "docker",
+        "docker_host": "unix:///var/run/docker.sock",
+        "image": "python:3.14.7-slim@sha256:cad9a2c871761c413caa6fdd6441c783451e740a48aaeba60ae62a8b53525ef6",
+        "max_file_bytes": 1048576,
+        "max_output_bytes": 65536,
+        "max_snapshot_bytes": 8388608,
+        "memory_mb": 256,
+        "pids_limit": 32,
+        "timeout_seconds": 5
+      },
+      "tasks": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-job-example/study/tasks.json",
+        "sha256": "dede9a3b9b7f5ed21e1fcde199386965350c078e3c494465498dc71939ea2f38"
+      }
+    },
+    "interventions": {
+      "config": {
+        "artifact_root": ".cache/review-completion-validation/examples-current/final-job-example/study/planner",
+        "label_kind": "fixture",
+        "random_seed": 17,
+        "tokenizer": {
+          "format": "json",
+          "path": ".cache/gpt-oss-assets/tokenizer.json",
+          "sha256": "0614fe83cadab421296e664e1f48f4261fa8fef6e03e63bb75c20f38e37d07d3"
+        }
+      },
+      "direction": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-job-example/study/planner/direction/direction.json",
+        "sha256": "221b4aff00fb910b1beb58ac3155e4880a7ab52beaab03df9dd0c1fab37c13b8"
+      },
+      "steering_policy": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-job-example/study/planner/policy/steering-policy.json",
+        "sha256": "c8218976465117bc3cf9b20baec163ba391034dd035c24f687788fff2b44c6d2"
+      }
+    },
+    "patch": {
+      "allocation": {
+        "cost_basis": "Numerical protocol fixture only; no research jobs or billing.",
+        "max_cost_usd": "0",
+        "max_jobs": 512,
+        "max_output_tokens": 100000,
+        "max_seconds": 300000,
+        "usd_per_second": "0"
+      },
+      "seeds": [
+        41,
+        42,
+        43,
+        44
+      ]
+    },
+    "readiness": {
+      "behavior_audit": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-job-example/behavior_audit.json",
+        "sha256": "4053945d717453d27cbd1eb9930f8379d417df6c858cd9046982e29d7972461d"
+      },
+      "evaluator": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-job-example/evaluator.json",
+        "sha256": "4053945d717453d27cbd1eb9930f8379d417df6c858cd9046982e29d7972461d"
+      },
+      "pilot": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-job-example/pilot.json",
+        "sha256": "4053945d717453d27cbd1eb9930f8379d417df6c858cd9046982e29d7972461d"
+      },
+      "reasoning_audit": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-job-example/reasoning_audit.json",
+        "sha256": "4053945d717453d27cbd1eb9930f8379d417df6c858cd9046982e29d7972461d"
+      },
+      "sandbox": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-job-example/host.json",
+        "sha256": "c5f4f8e1caafd3d99dc1691894cdff2924819a84d454a8165bfe2d2ce30888f7"
+      }
+    },
+    "reasoning": {
+      "artifact_root": ".cache/review-completion-validation/examples-current/final-job-example/study/reasoning",
+      "audit_seed": 17,
+      "audit_size": 50,
+      "label_kind": "fixture",
+      "provider": {
+        "max_calls": 8,
+        "max_cost_usd": "0.02",
+        "max_input_tokens": 12000,
+        "max_output_tokens": 128,
+        "max_seconds": 120,
+        "model": "explicit-offline-fixture-model",
+        "rates": {
+          "cached_input": "1",
+          "input": "2",
+          "output": "8",
+          "source": "https://example.invalid/fixture-prices",
+          "verified_at": "2026-09-09"
+        },
+        "reasoning_effort": "low",
+        "timeout_seconds": 5
+      },
+      "tokenizer": {
+        "format": "json",
+        "path": ".cache/gpt-oss-assets/tokenizer.json",
+        "sha256": "0614fe83cadab421296e664e1f48f4261fa8fef6e03e63bb75c20f38e37d07d3"
+      }
+    },
+    "runtime": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-job-example/study/runtime.json",
+      "sha256": "007abcec3796afa54917a4f16b2737fa7c341fef304e4d5512f1bb892f49dd72"
+    },
+    "runtime_check": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-job-example/study/model/acceptance-runtime-fea1eee3aad34d5f92dfc46a9e8a4813/check.json",
+      "sha256": "f69269c500af4a79c46a68a3500434f431a2ccac48800fd763be88fe00220ab2"
+    },
+    "sampling": {
+      "allocation": {
+        "cost_basis": "Numerical protocol fixture only; no research jobs or billing.",
+        "max_cost_usd": "0",
+        "max_jobs": 512,
+        "max_output_tokens": 100000,
+        "max_seconds": 300000,
+        "usd_per_second": "0"
+      },
+      "seeds": [
+        31,
+        32,
+        33,
+        34
+      ]
+    },
+    "text": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-job-example/study/text-calibration.json",
+      "sha256": "9dd01fb54cbb8983d76f4f2d331c24a370c9e379583aee38713743f1c98a9a85"
+    }
+  },
+  "operation": "experiment.freeze",
+  "request_id": "manifest-copy",
+  "schema_version": 1
+}

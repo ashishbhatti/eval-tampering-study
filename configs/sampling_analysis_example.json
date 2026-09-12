@@ -1,0 +1,27 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/sampling/analysis",
+    "bootstrap_seed": 19,
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "outcomes": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/sampling/outcomes.json",
+      "sha256": "986a2d2758d16178519844b3a839041545506cc859a430d3f45d19be24a51510"
+    },
+    "plan": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/sampling/episodes/sampling/review-sampling/plan.json",
+      "sha256": "943281f754c77d5f35524171ac1c8a24089f58000bf8c9b25d62812dfb111124"
+    },
+    "rule": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/sampling/analysis/review-sampling_analysis_rule/rule.json",
+      "sha256": "b6ec62443b65084c761d028aeabe44e3450b63f9062011794e7672a94177622b"
+    }
+  },
+  "operation": "analysis.sampling",
+  "request_id": "review-sampling_analysis",
+  "schema_version": 1
+}

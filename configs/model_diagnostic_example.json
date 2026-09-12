@@ -1,0 +1,31 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/runtime-check-example/records",
+    "max_context_tokens": 512,
+    "model_path": ".cache/gpt-oss-assets",
+    "profile": "tiny-gpt-oss-cpu"
+  },
+  "inputs": {
+    "intervention": {
+      "direction": {
+        "format": "npz",
+        "path": ".cache/review-completion-validation/examples-current/runtime-check-example/records/runtime-check-example-e2907c389dfe46c79641c6034218b27b/coordinate.npz",
+        "sha256": "6cb39a4933fbeaeb5ac82e319da6e095c07561c282fad48eeb90bdb60a204a10"
+      },
+      "layer": 1,
+      "mode": "add",
+      "runtime_sha256": "7933375a89f78207f28576c45671133bad0f7bbf3b8f76cd267c0ae018f6abc0",
+      "schedule": "S2",
+      "value": 0.25
+    },
+    "max_seconds": 30,
+    "prefix": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/runtime-check-example/prefix.json",
+      "sha256": "eb69e6239b98a51576e77e3ed6a7958782da6d9bb4bcf567f08f74469bf5f765"
+    }
+  },
+  "operation": "diagnose",
+  "request_id": "runtime-check-diagnostic",
+  "schema_version": 1
+}

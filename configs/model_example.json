@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "request_id": "tiny-model-prepare",
+  "operation": "prepare",
+  "config": {
+    "profile": "tiny-gpt-oss-cpu",
+    "model_path": ".cache/gpt-oss-assets",
+    "artifact_root": ".cache/model-records",
+    "max_context_tokens": 512
+  },
+  "inputs": {
+    "messages": [{"role": "user", "content": "Inspect the visible task files and fix the implementation."}],
+    "date": "2026-09-09",
+    "reasoning_effort": "medium"
+  }
+}

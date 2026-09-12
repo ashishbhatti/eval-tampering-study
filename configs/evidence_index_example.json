@@ -1,0 +1,22 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/cost/analysis",
+    "bootstrap_seed": 19,
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "claims": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/claims.json",
+      "sha256": "c40d7f9e84d88b4420a0f62d4de6d62f12c7a3ee411223c1dc26fbd847c75d8d"
+    },
+    "rule": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/cost/analysis/review-cost_analysis_rule/rule.json",
+      "sha256": "153d749603c9b5fdcd8381dddf52fa6325b0519a0ba321614044b825809e0662"
+    }
+  },
+  "operation": "analysis.index",
+  "request_id": "review-evidence_index",
+  "schema_version": 1
+}

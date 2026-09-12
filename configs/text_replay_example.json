@@ -1,0 +1,26 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/text-live-replay",
+    "label_kind": "fixture",
+    "provider": null,
+    "tokenizer": {
+      "format": "json",
+      "path": ".cache/gpt-oss-assets/tokenizer.json",
+      "sha256": "0614fe83cadab421296e664e1f48f4261fa8fef6e03e63bb75c20f38e37d07d3"
+    }
+  },
+  "inputs": {
+    "calibration": null,
+    "features": {
+      "format": "json",
+      "path": ".cache/runner-live-668ee3e667a04c9ca348310c0992263f/features.json",
+      "sha256": "a109fa55bbc4f8a3dad3effde6f671564b89635d088ed28d1a70bcc66fb65e1e"
+    },
+    "splits": [
+      "training"
+    ]
+  },
+  "operation": "text.score",
+  "request_id": "review-text_replay",
+  "schema_version": 1
+}

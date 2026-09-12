@@ -1,0 +1,26 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/runtime-check-example/records",
+    "max_context_tokens": 512,
+    "model_path": ".cache/gpt-oss-assets",
+    "profile": "tiny-gpt-oss-cpu"
+  },
+  "inputs": {
+    "atol": 1e-05,
+    "delta": 0.25,
+    "layer": 1,
+    "max_device_bytes": null,
+    "max_new_tokens": 4,
+    "max_peak_rss_bytes": 8589934592,
+    "max_seconds": 60,
+    "prefix": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/runtime-check-example/prefix.json",
+      "sha256": "eb69e6239b98a51576e77e3ed6a7958782da6d9bb4bcf567f08f74469bf5f765"
+    },
+    "rtol": 0.0001
+  },
+  "operation": "check",
+  "request_id": "runtime-check-example",
+  "schema_version": 1
+}

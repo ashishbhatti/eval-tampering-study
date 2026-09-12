@@ -1,0 +1,35 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/policy-example/planner",
+    "label_kind": "fixture",
+    "random_seed": 17,
+    "tokenizer": {
+      "format": "json",
+      "path": ".cache/gpt-oss-assets/tokenizer.json",
+      "sha256": "0614fe83cadab421296e664e1f48f4261fa8fef6e03e63bb75c20f38e37d07d3"
+    }
+  },
+  "inputs": {
+    "allocation": {
+      "cost_basis": "Offline fixture; no model or episode execution.",
+      "max_cost_usd": "0",
+      "max_input_tokens": 1000000,
+      "max_jobs": 256,
+      "max_seconds": 10000,
+      "usd_per_second": "0"
+    },
+    "max_seconds": 30,
+    "plan": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/policy-example/planner/calibration/steering-plan.json",
+      "sha256": "208e7c58819732ec27ef180909a30a84098736376993740c25159c3b6ecd19aa"
+    },
+    "record_ids": [
+      "g0-r0",
+      "g0-r4"
+    ]
+  },
+  "operation": "intervention.plan_calibration",
+  "request_id": "numerical-plan",
+  "schema_version": 1
+}

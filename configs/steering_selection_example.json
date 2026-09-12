@@ -1,0 +1,27 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/policy-example/planner",
+    "label_kind": "fixture",
+    "random_seed": 17,
+    "tokenizer": {
+      "format": "json",
+      "path": ".cache/gpt-oss-assets/tokenizer.json",
+      "sha256": "0614fe83cadab421296e664e1f48f4261fa8fef6e03e63bb75c20f38e37d07d3"
+    }
+  },
+  "inputs": {
+    "outcomes": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/policy-example/scripted-outcomes.json",
+      "sha256": "bc48be6ec5f907064e537dd9d9912a65a82e7cf046f21bf4ca7f4861fe4a774e"
+    },
+    "plan": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/policy-example/planner/validation/steering-plan.json",
+      "sha256": "9509fdefa21aed60d47935357991874a0b2251f75e22e1d6e745932cb90681cd"
+    }
+  },
+  "operation": "intervention.select_strength",
+  "request_id": "selection",
+  "schema_version": 1
+}

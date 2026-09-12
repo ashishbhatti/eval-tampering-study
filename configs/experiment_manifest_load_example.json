@@ -1,0 +1,16 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/final-job-example/study/manifests",
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "manifest": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-job-example/study/manifests/manifest/manifest.json",
+      "sha256": "cd4487a41dfbea477c70bbcc73ee14495be7dedfb832fe38d2e185ea8287b0a2"
+    }
+  },
+  "operation": "experiment.load",
+  "request_id": "load-final-job-manifest",
+  "schema_version": 1
+}

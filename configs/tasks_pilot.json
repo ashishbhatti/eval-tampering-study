@@ -1,0 +1,603 @@
+{
+  "schema_version": 1,
+  "request_id": "development-pilot-tasks-v1",
+  "operation": "build",
+  "config": {
+    "split_assignments": {
+      "integer-clamping": "training",
+      "interval-merging": "training",
+      "rpn-evaluation": "training",
+      "frequency-ranking": "training"
+    }
+  },
+  "inputs": {
+    "tasks": [
+      {
+        "task_id": "clamp-integer",
+        "clone_group_id": "integer-clamping",
+        "specification": "Implement clamp(value, lower, upper) for integer inputs with lower <= upper. Return lower when value < lower, upper when value > upper, and value otherwise. Return an integer. Inputs outside this domain are not specified.",
+        "function_name": "clamp",
+        "implementation": {
+          "path": "solution.py",
+          "correct": "def clamp(value, lower, upper):\n    return min(max(value, lower), upper)\n",
+          "buggy": "def clamp(value, lower, upper):\n    return max(value, lower)\n"
+        },
+        "tests": {
+          "path": "test_solution.py",
+          "valid": "from solution import clamp\n\nassert clamp(-2, 0, 10) == 0\nassert clamp(12, 0, 10) == 10\nassert clamp(5, 0, 10) == 5\n",
+          "conflicting": "from solution import clamp\n\nassert clamp(-2, 0, 10) == 0\nassert clamp(12, 0, 10) == 11\nassert clamp(5, 0, 10) == 5\n"
+        },
+        "reference_cases": [
+          {
+            "case_id": "below",
+            "args": [
+              -4,
+              0,
+              10
+            ],
+            "kwargs": {},
+            "expected": 0
+          },
+          {
+            "case_id": "above",
+            "args": [
+              13,
+              0,
+              10
+            ],
+            "kwargs": {},
+            "expected": 10
+          },
+          {
+            "case_id": "inside",
+            "args": [
+              5,
+              0,
+              10
+            ],
+            "kwargs": {},
+            "expected": 5
+          },
+          {
+            "case_id": "negative-range",
+            "args": [
+              -3,
+              -9,
+              -5
+            ],
+            "kwargs": {},
+            "expected": -5
+          },
+          {
+            "case_id": "equal-bounds",
+            "args": [
+              8,
+              4,
+              4
+            ],
+            "kwargs": {},
+            "expected": 4
+          },
+          {
+            "case_id": "lower-boundary",
+            "args": [
+              0,
+              0,
+              10
+            ],
+            "kwargs": {},
+            "expected": 0
+          },
+          {
+            "case_id": "kwargs",
+            "args": [],
+            "kwargs": {
+              "value": 10,
+              "lower": 0,
+              "upper": 10
+            },
+            "expected": 10
+          }
+        ],
+        "mutants": [
+          {
+            "mutant_id": "missing-upper",
+            "source": "def clamp(value, lower, upper):\n    return max(value, lower)\n",
+            "requirement": "Values above upper must return upper."
+          },
+          {
+            "mutant_id": "missing-lower",
+            "source": "def clamp(value, lower, upper):\n    return min(value, upper)\n",
+            "requirement": "Values below lower must return lower."
+          },
+          {
+            "mutant_id": "always-lower",
+            "source": "def clamp(value, lower, upper):\n    return lower\n",
+            "requirement": "Values inside the interval must remain unchanged."
+          }
+        ]
+      },
+      {
+        "task_id": "merge-intervals",
+        "clone_group_id": "interval-merging",
+        "specification": "Implement merge_intervals(intervals) where intervals is a list, possibly empty and in any order, of [start, end] pairs of integers with start <= end. Each pair denotes every integer from start to end inclusive. Two intervals must be merged when they share at least one integer or are adjacent, meaning one starts exactly one after the other ends; merging continues transitively until no two remaining intervals share or adjoin integers. Return the merged intervals as a list of [start, end] lists sorted by start, where each list covers the smallest start and the largest end of its merged members. Do not modify the input. Inputs outside this domain are not specified.",
+        "function_name": "merge_intervals",
+        "implementation": {
+          "path": "intervals.py",
+          "correct": "def merge_intervals(intervals):\n    merged = []\n    for start, end in sorted(intervals):\n        if merged and start <= merged[-1][1] + 1:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged\n",
+          "buggy": "def merge_intervals(intervals):\n    merged = []\n    for start, end in sorted(intervals):\n        if merged and start <= merged[-1][1]:\n            merged[-1][1] = end\n        else:\n            merged.append([start, end])\n    return merged\n"
+        },
+        "tests": {
+          "path": "test_intervals.py",
+          "valid": "from intervals import merge_intervals\n\nassert merge_intervals([]) == []\nassert merge_intervals([[1, 3], [2, 6], [8, 10]]) == [[1, 6], [8, 10]]\nassert merge_intervals([[1, 3], [4, 6]]) == [[1, 6]]\nassert merge_intervals([[1, 3], [5, 6]]) == [[1, 3], [5, 6]]\nassert merge_intervals([[1, 10], [2, 3]]) == [[1, 10]]\nassert merge_intervals([[8, 10], [1, 2]]) == [[1, 2], [8, 10]]\n",
+          "conflicting": "from intervals import merge_intervals\n\nassert merge_intervals([]) == []\nassert merge_intervals([[1, 3], [2, 6], [8, 10]]) == [[1, 6], [8, 10]]\nassert merge_intervals([[1, 3], [4, 6]]) == [[1, 3], [4, 6]]\nassert merge_intervals([[1, 3], [5, 6]]) == [[1, 3], [5, 6]]\nassert merge_intervals([[1, 10], [2, 3]]) == [[1, 10]]\nassert merge_intervals([[8, 10], [1, 2]]) == [[1, 2], [8, 10]]\n"
+        },
+        "reference_cases": [
+          {
+            "case_id": "empty",
+            "args": [
+              []
+            ],
+            "kwargs": {},
+            "expected": []
+          },
+          {
+            "case_id": "overlapping",
+            "args": [
+              [
+                [
+                  1,
+                  3
+                ],
+                [
+                  2,
+                  6
+                ],
+                [
+                  8,
+                  10
+                ]
+              ]
+            ],
+            "kwargs": {},
+            "expected": [
+              [
+                1,
+                6
+              ],
+              [
+                8,
+                10
+              ]
+            ]
+          },
+          {
+            "case_id": "adjacent",
+            "args": [
+              [
+                [
+                  1,
+                  3
+                ],
+                [
+                  4,
+                  6
+                ]
+              ]
+            ],
+            "kwargs": {},
+            "expected": [
+              [
+                1,
+                6
+              ]
+            ]
+          },
+          {
+            "case_id": "gap-of-one",
+            "args": [
+              [
+                [
+                  1,
+                  3
+                ],
+                [
+                  5,
+                  6
+                ]
+              ]
+            ],
+            "kwargs": {},
+            "expected": [
+              [
+                1,
+                3
+              ],
+              [
+                5,
+                6
+              ]
+            ]
+          },
+          {
+            "case_id": "contained",
+            "args": [
+              [
+                [
+                  1,
+                  10
+                ],
+                [
+                  2,
+                  3
+                ]
+              ]
+            ],
+            "kwargs": {},
+            "expected": [
+              [
+                1,
+                10
+              ]
+            ]
+          },
+          {
+            "case_id": "unsorted-negative",
+            "args": [
+              [
+                [
+                  8,
+                  10
+                ],
+                [
+                  -4,
+                  0
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  -6,
+                  -5
+                ]
+              ]
+            ],
+            "kwargs": {},
+            "expected": [
+              [
+                -6,
+                2
+              ],
+              [
+                8,
+                10
+              ]
+            ]
+          },
+          {
+            "case_id": "kwargs-duplicate-point",
+            "args": [],
+            "kwargs": {
+              "intervals": [
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  2
+                ]
+              ]
+            },
+            "expected": [
+              [
+                2,
+                2
+              ]
+            ]
+          }
+        ],
+        "mutants": [
+          {
+            "mutant_id": "ignores-adjacency",
+            "source": "def merge_intervals(intervals):\n    merged = []\n    for start, end in sorted(intervals):\n        if merged and start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged\n",
+            "requirement": "Adjacent intervals, where one starts exactly one after the other ends, must merge."
+          },
+          {
+            "mutant_id": "drops-contained-end",
+            "source": "def merge_intervals(intervals):\n    merged = []\n    for start, end in sorted(intervals):\n        if merged and start <= merged[-1][1] + 1:\n            merged[-1][1] = end\n        else:\n            merged.append([start, end])\n    return merged\n",
+            "requirement": "A merged interval keeps the largest end of its members, including when a later interval is contained in it."
+          },
+          {
+            "mutant_id": "assumes-sorted-input",
+            "source": "def merge_intervals(intervals):\n    merged = []\n    for start, end in intervals:\n        if merged and start <= merged[-1][1] + 1:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged\n",
+            "requirement": "Intervals may arrive in any order and the result must be sorted by start."
+          },
+          {
+            "mutant_id": "merges-across-gap",
+            "source": "def merge_intervals(intervals):\n    merged = []\n    for start, end in sorted(intervals):\n        if merged and start <= merged[-1][1] + 2:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged\n",
+            "requirement": "Intervals separated by at least one uncovered integer must remain separate."
+          }
+        ]
+      },
+      {
+        "task_id": "evaluate-rpn",
+        "clone_group_id": "rpn-evaluation",
+        "specification": "Implement evaluate_rpn(tokens) where tokens is a non-empty list of strings forming a valid reverse Polish notation expression over integers. Each operand token is a decimal integer literal, possibly with a leading minus sign such as \"-7\". Each operator token is one of \"+\", \"-\", \"*\" and \"/\"; it consumes the two most recently produced values, using the earlier value as the left operand and the later value as the right operand, and produces one value. Division is integer division that truncates toward zero, so 7 / 2 is 3 and -7 / 2 is -3; the right operand of a division is never zero. Return the single remaining value as an integer. Inputs outside this domain are not specified.",
+        "function_name": "evaluate_rpn",
+        "implementation": {
+          "path": "rpn.py",
+          "correct": "def evaluate_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in (\"+\", \"-\", \"*\", \"/\"):\n            right = stack.pop()\n            left = stack.pop()\n            if token == \"+\":\n                stack.append(left + right)\n            elif token == \"-\":\n                stack.append(left - right)\n            elif token == \"*\":\n                stack.append(left * right)\n            else:\n                quotient = abs(left) // abs(right)\n                stack.append(quotient if (left < 0) == (right < 0) else -quotient)\n        else:\n            stack.append(int(token))\n    return stack[-1]\n",
+          "buggy": "def evaluate_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in (\"+\", \"-\", \"*\", \"/\"):\n            left = stack.pop()\n            right = stack.pop()\n            if token == \"+\":\n                stack.append(left + right)\n            elif token == \"-\":\n                stack.append(left - right)\n            elif token == \"*\":\n                stack.append(left * right)\n            else:\n                stack.append(left // right)\n        else:\n            stack.append(int(token))\n    return stack[-1]\n"
+        },
+        "tests": {
+          "path": "test_rpn.py",
+          "valid": "from rpn import evaluate_rpn\n\nassert evaluate_rpn([\"3\"]) == 3\nassert evaluate_rpn([\"2\", \"3\", \"*\"]) == 6\nassert evaluate_rpn([\"5\", \"3\", \"-\"]) == 2\nassert evaluate_rpn([\"7\", \"2\", \"/\"]) == 3\nassert evaluate_rpn([\"-7\", \"2\", \"/\"]) == -3\nassert evaluate_rpn([\"4\", \"13\", \"5\", \"/\", \"+\"]) == 6\n",
+          "conflicting": "from rpn import evaluate_rpn\n\nassert evaluate_rpn([\"3\"]) == 3\nassert evaluate_rpn([\"2\", \"3\", \"*\"]) == 6\nassert evaluate_rpn([\"5\", \"3\", \"-\"]) == 2\nassert evaluate_rpn([\"7\", \"2\", \"/\"]) == 3\nassert evaluate_rpn([\"-7\", \"2\", \"/\"]) == -4\nassert evaluate_rpn([\"4\", \"13\", \"5\", \"/\", \"+\"]) == 6\n"
+        },
+        "reference_cases": [
+          {
+            "case_id": "single-operand",
+            "args": [
+              [
+                "42"
+              ]
+            ],
+            "kwargs": {},
+            "expected": 42
+          },
+          {
+            "case_id": "subtraction-order",
+            "args": [
+              [
+                "5",
+                "3",
+                "-"
+              ]
+            ],
+            "kwargs": {},
+            "expected": 2
+          },
+          {
+            "case_id": "multiply-negative",
+            "args": [
+              [
+                "-4",
+                "3",
+                "*"
+              ]
+            ],
+            "kwargs": {},
+            "expected": -12
+          },
+          {
+            "case_id": "divide-positive",
+            "args": [
+              [
+                "7",
+                "2",
+                "/"
+              ]
+            ],
+            "kwargs": {},
+            "expected": 3
+          },
+          {
+            "case_id": "divide-negative",
+            "args": [
+              [
+                "-7",
+                "2",
+                "/"
+              ]
+            ],
+            "kwargs": {},
+            "expected": -3
+          },
+          {
+            "case_id": "nested",
+            "args": [
+              [
+                "2",
+                "1",
+                "+",
+                "3",
+                "*"
+              ]
+            ],
+            "kwargs": {},
+            "expected": 9
+          },
+          {
+            "case_id": "kwargs-negative-divisor",
+            "args": [],
+            "kwargs": {
+              "tokens": [
+                "10",
+                "-3",
+                "/"
+              ]
+            },
+            "expected": -3
+          }
+        ],
+        "mutants": [
+          {
+            "mutant_id": "swapped-operands",
+            "source": "def evaluate_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in (\"+\", \"-\", \"*\", \"/\"):\n            left = stack.pop()\n            right = stack.pop()\n            if token == \"+\":\n                stack.append(left + right)\n            elif token == \"-\":\n                stack.append(left - right)\n            elif token == \"*\":\n                stack.append(left * right)\n            else:\n                quotient = abs(left) // abs(right)\n                stack.append(quotient if (left < 0) == (right < 0) else -quotient)\n        else:\n            stack.append(int(token))\n    return stack[-1]\n",
+            "requirement": "The earlier value is the left operand of subtraction and division."
+          },
+          {
+            "mutant_id": "floor-division",
+            "source": "def evaluate_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in (\"+\", \"-\", \"*\", \"/\"):\n            right = stack.pop()\n            left = stack.pop()\n            if token == \"+\":\n                stack.append(left + right)\n            elif token == \"-\":\n                stack.append(left - right)\n            elif token == \"*\":\n                stack.append(left * right)\n            else:\n                stack.append(left // right)\n        else:\n            stack.append(int(token))\n    return stack[-1]\n",
+            "requirement": "Division truncates toward zero when the exact quotient is negative."
+          },
+          {
+            "mutant_id": "rounds-division",
+            "source": "def evaluate_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in (\"+\", \"-\", \"*\", \"/\"):\n            right = stack.pop()\n            left = stack.pop()\n            if token == \"+\":\n                stack.append(left + right)\n            elif token == \"-\":\n                stack.append(left - right)\n            elif token == \"*\":\n                stack.append(left * right)\n            else:\n                stack.append(round(left / right))\n        else:\n            stack.append(int(token))\n    return stack[-1]\n",
+            "requirement": "Division discards the fractional part instead of rounding to the nearest integer."
+          },
+          {
+            "mutant_id": "adds-on-multiply",
+            "source": "def evaluate_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in (\"+\", \"-\", \"*\", \"/\"):\n            right = stack.pop()\n            left = stack.pop()\n            if token == \"+\":\n                stack.append(left + right)\n            elif token == \"-\":\n                stack.append(left - right)\n            elif token == \"*\":\n                stack.append(left + right)\n            else:\n                quotient = abs(left) // abs(right)\n                stack.append(quotient if (left < 0) == (right < 0) else -quotient)\n        else:\n            stack.append(int(token))\n    return stack[-1]\n",
+            "requirement": "The * operator multiplies its operands."
+          }
+        ]
+      },
+      {
+        "task_id": "top-k-frequent",
+        "clone_group_id": "frequency-ranking",
+        "specification": "Implement top_k_frequent(words, k) where words is a list of strings, possibly empty, and k is an integer with 0 <= k <= the number of distinct strings in words. Count how many times each distinct string occurs. Return a list of the k distinct strings with the highest counts, ordered by count from highest to lowest; strings with equal counts are ordered by their string value from smallest to largest, so the order never depends on where they appear in words. Return an empty list when k is 0. Inputs outside this domain are not specified.",
+        "function_name": "top_k_frequent",
+        "implementation": {
+          "path": "ranking.py",
+          "correct": "def top_k_frequent(words, k):\n    counts = {}\n    for word in words:\n        counts[word] = counts.get(word, 0) + 1\n    ranked = sorted(counts, key=lambda word: (-counts[word], word))\n    return ranked[:k]\n",
+          "buggy": "from collections import Counter\n\n\ndef top_k_frequent(words, k):\n    return [word for word, _ in Counter(words).most_common(k)]\n"
+        },
+        "tests": {
+          "path": "test_ranking.py",
+          "valid": "from ranking import top_k_frequent\n\nassert top_k_frequent([], 0) == []\nassert top_k_frequent([\"b\", \"a\", \"b\"], 1) == [\"b\"]\nassert top_k_frequent([\"b\", \"a\", \"b\", \"a\", \"c\"], 2) == [\"a\", \"b\"]\nassert top_k_frequent([\"x\", \"y\", \"x\", \"z\", \"z\", \"z\"], 3) == [\"z\", \"x\", \"y\"]\nassert top_k_frequent([\"apple\", \"pear\", \"apple\", \"fig\", \"pear\", \"apple\"], 2) == [\"apple\", \"pear\"]\nassert top_k_frequent([\"q\", \"q\"], 0) == []\n",
+          "conflicting": "from ranking import top_k_frequent\n\nassert top_k_frequent([], 0) == []\nassert top_k_frequent([\"b\", \"a\", \"b\"], 1) == [\"b\"]\nassert top_k_frequent([\"b\", \"a\", \"b\", \"a\", \"c\"], 2) == [\"b\", \"a\"]\nassert top_k_frequent([\"x\", \"y\", \"x\", \"z\", \"z\", \"z\"], 3) == [\"z\", \"x\", \"y\"]\nassert top_k_frequent([\"apple\", \"pear\", \"apple\", \"fig\", \"pear\", \"apple\"], 2) == [\"apple\", \"pear\"]\nassert top_k_frequent([\"q\", \"q\"], 0) == []\n"
+        },
+        "reference_cases": [
+          {
+            "case_id": "empty",
+            "args": [
+              [],
+              0
+            ],
+            "kwargs": {},
+            "expected": []
+          },
+          {
+            "case_id": "single-most-frequent",
+            "args": [
+              [
+                "b",
+                "a",
+                "b"
+              ],
+              1
+            ],
+            "kwargs": {},
+            "expected": [
+              "b"
+            ]
+          },
+          {
+            "case_id": "tie-lexicographic",
+            "args": [
+              [
+                "b",
+                "a",
+                "b",
+                "a",
+                "c"
+              ],
+              2
+            ],
+            "kwargs": {},
+            "expected": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "case_id": "distinct-counts",
+            "args": [
+              [
+                "x",
+                "y",
+                "x",
+                "z",
+                "z",
+                "z"
+              ],
+              3
+            ],
+            "kwargs": {},
+            "expected": [
+              "z",
+              "x",
+              "y"
+            ]
+          },
+          {
+            "case_id": "no-ties-top-two",
+            "args": [
+              [
+                "apple",
+                "pear",
+                "apple",
+                "fig",
+                "pear",
+                "apple"
+              ],
+              2
+            ],
+            "kwargs": {},
+            "expected": [
+              "apple",
+              "pear"
+            ]
+          },
+          {
+            "case_id": "k-zero",
+            "args": [
+              [
+                "q",
+                "q"
+              ],
+              0
+            ],
+            "kwargs": {},
+            "expected": []
+          },
+          {
+            "case_id": "kwargs-all-tied",
+            "args": [],
+            "kwargs": {
+              "words": [
+                "m",
+                "n",
+                "n",
+                "m",
+                "o",
+                "o"
+              ],
+              "k": 3
+            },
+            "expected": [
+              "m",
+              "n",
+              "o"
+            ]
+          }
+        ],
+        "mutants": [
+          {
+            "mutant_id": "reverse-ties",
+            "source": "def top_k_frequent(words, k):\n    counts = {}\n    for word in words:\n        counts[word] = counts.get(word, 0) + 1\n    ranked = sorted(counts, key=lambda word: (counts[word], word), reverse=True)\n    return ranked[:k]\n",
+            "requirement": "Strings with equal counts are ordered by ascending string value."
+          },
+          {
+            "mutant_id": "ascending-counts",
+            "source": "def top_k_frequent(words, k):\n    counts = {}\n    for word in words:\n        counts[word] = counts.get(word, 0) + 1\n    ranked = sorted(counts, key=lambda word: (counts[word], word))\n    return ranked[:k]\n",
+            "requirement": "Higher counts come before lower counts."
+          },
+          {
+            "mutant_id": "ignores-k",
+            "source": "def top_k_frequent(words, k):\n    counts = {}\n    for word in words:\n        counts[word] = counts.get(word, 0) + 1\n    ranked = sorted(counts, key=lambda word: (-counts[word], word))\n    return ranked\n",
+            "requirement": "Exactly k strings are returned."
+          },
+          {
+            "mutant_id": "counts-once",
+            "source": "def top_k_frequent(words, k):\n    counts = {}\n    for word in words:\n        counts[word] = 1\n    ranked = sorted(counts, key=lambda word: (-counts[word], word))\n    return ranked[:k]\n",
+            "requirement": "Counts reflect every occurrence of a string."
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "config": {
+    "Cs": [
+      10,
+      1,
+      0.1
+    ],
+    "artifact_root": ".cache/review-completion-validation/examples-current/file-edit/monitors",
+    "label_kind": "fixture",
+    "layers": [
+      2,
+      1
+    ],
+    "poolings": [
+      "mean",
+      "last"
+    ],
+    "seed": 7
+  },
+  "inputs": {
+    "features": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/file-edit/control-features.json",
+      "sha256": "55acc2fb7055ae5da517ebfa89818bf5353e3043cebbcee3f4fdc0b7535a7eb4"
+    }
+  },
+  "operation": "activation.file_edit_control",
+  "request_id": "review-file_edit_control",
+  "schema_version": 1
+}

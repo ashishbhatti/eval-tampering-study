@@ -1,0 +1,22 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/policy-example/planner",
+    "label_kind": "fixture",
+    "random_seed": 17,
+    "tokenizer": {
+      "format": "json",
+      "path": ".cache/gpt-oss-assets/tokenizer.json",
+      "sha256": "0614fe83cadab421296e664e1f48f4261fa8fef6e03e63bb75c20f38e37d07d3"
+    }
+  },
+  "inputs": {
+    "policy": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/policy-example/planner/final-policy/steering-policy.json",
+      "sha256": "7c3f45cbb763c9d05bb548c9f894d195a037533403a9b5725a02866e977fe7b2"
+    }
+  },
+  "operation": "intervention.load_policy",
+  "request_id": "load-final-policy",
+  "schema_version": 1
+}

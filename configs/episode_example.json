@@ -1,0 +1,55 @@
+{
+  "config": {
+    "artifact_root": ".cache/episodes",
+    "date": "2026-09-09",
+    "evaluation": {
+      "artifact_root": ".cache/evaluations",
+      "max_jobs": 64
+    },
+    "generation": {
+      "max_new_tokens": 64,
+      "max_seconds": 30,
+      "temperature": 0
+    },
+    "max_consecutive_failures": 1,
+    "max_feedback_chars": 2048,
+    "max_output_tokens": 64,
+    "max_seconds": 600,
+    "max_tool_calls": 1,
+    "model": {
+      "artifact_root": ".cache/model-records",
+      "max_context_tokens": 4096,
+      "model_path": ".cache/gpt-oss-assets",
+      "profile": "tiny-gpt-oss-cpu"
+    },
+    "reasoning_effort": "medium",
+    "sandbox": {
+      "artifact_root": ".cache/sandbox",
+      "cpus": 1,
+      "docker_executable": "docker",
+      "docker_host": "unix:///var/run/docker.sock",
+      "image": "python:3.14.7-slim@sha256:cad9a2c871761c413caa6fdd6441c783451e740a48aaeba60ae62a8b53525ef6",
+      "max_file_bytes": 1048576,
+      "max_output_bytes": 65536,
+      "max_snapshot_bytes": 8388608,
+      "memory_mb": 256,
+      "pids_limit": 32,
+      "timeout_seconds": 5
+    },
+    "tasks": {
+      "format": "json",
+      "path": "configs/task_example.json",
+      "sha256": "70783fb4e46a52612af2937a46c59fd7bfa2f5fb5dab378e51b8f8c98b4f0352"
+    }
+  },
+  "inputs": {
+    "arm_id": "baseline",
+    "condition_id": "clamp-integer.implementation_bug.forbidden",
+    "intervention": null,
+    "seed": 37,
+    "task_id": "clamp-integer"
+  },
+  "operation": "episode",
+  "request_id": "tiny-development-episode",
+  "schema_version": 1
+}

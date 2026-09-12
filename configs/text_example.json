@@ -1,0 +1,26 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/text/text",
+    "label_kind": "fixture",
+    "provider": null,
+    "tokenizer": {
+      "format": "json",
+      "path": ".cache/gpt-oss-assets/tokenizer.json",
+      "sha256": "0614fe83cadab421296e664e1f48f4261fa8fef6e03e63bb75c20f38e37d07d3"
+    }
+  },
+  "inputs": {
+    "calibration": null,
+    "features": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/text/features.json",
+      "sha256": "f07733021bd86173333f45ca5b65e8938a05085051582f5ee6b568c717037ef5"
+    },
+    "splits": [
+      "validation"
+    ]
+  },
+  "operation": "text.score",
+  "request_id": "review-text",
+  "schema_version": 1
+}

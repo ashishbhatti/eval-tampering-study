@@ -1,0 +1,32 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/final-intervention-example/study/analysis",
+    "bootstrap_seed": 19,
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "reports": {
+      "cost": null,
+      "detection": null,
+      "patch": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-intervention-example/study/analysis/verified-patch_analysis/patch-summary.json",
+        "sha256": "25a24dd97611556d23f2967583d947dc4612f7292496bd7ce1dd989fc615e36f"
+      },
+      "sampling": null,
+      "steering": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-intervention-example/study/analysis/verified-steering_analysis/steering-summary.json",
+        "sha256": "6bc7815d2fb9033079e88386d655e888c7edcc1ac1d8ef4e7dbd3d8c987049e8"
+      }
+    },
+    "rule": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-intervention-example/study/analysis-rule.json",
+      "sha256": "6d0d2dde8ede05b626101212e8823bb197aba786b55e2166f96df04048312ced"
+    }
+  },
+  "operation": "analysis.figures",
+  "request_id": "intervention_figures-copy",
+  "schema_version": 1
+}

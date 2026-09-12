@@ -1,0 +1,80 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/reasoning-analysis/analysis",
+    "bootstrap_seed": 19,
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "annotations": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/reasoning-analysis/reasoning/annotated/annotations.json",
+      "sha256": "b3537e52aceeb05c1d46218515de559ce3dbd3bea109e3ee61b934a0fb8ccd64"
+    },
+    "audits": [
+      {
+        "adjudications": null,
+        "audit": {
+          "format": "json",
+          "path": ".cache/review-completion-validation/examples-current/reasoning-analysis/reasoning/random/audit-private.json",
+          "sha256": "3422fce80f5af801d3bae687ba3686fcbb3ad6acaafdab4671fa338133ded0e7"
+        },
+        "reviews": {
+          "format": "json",
+          "path": ".cache/review-completion-validation/examples-current/reasoning-analysis/uniform_random-review.json",
+          "sha256": "8a8677994e2a170765822d2423d4810eedc9a9020b7d62cd86aa4cb39b3def9b"
+        }
+      },
+      {
+        "adjudications": {
+          "format": "json",
+          "path": ".cache/review-completion-validation/examples-current/reasoning-analysis/resolution.json",
+          "sha256": "7e4e90dc8a13d4bfbfc3257d8d9ccd36204544a9ad3c1ff3c66d513d7e954841"
+        },
+        "audit": {
+          "format": "json",
+          "path": ".cache/review-completion-validation/examples-current/reasoning-analysis/reasoning/targeted/audit-private.json",
+          "sha256": "15c0128b9f494eca3ea03264cd3c55e1809d71013ffcfc4e51d08916b72efd8f"
+        },
+        "reviews": {
+          "format": "json",
+          "path": ".cache/review-completion-validation/examples-current/reasoning-analysis/targeted-review.json",
+          "sha256": "705649b3516e09a938a12882d94150c18c5e575c4ec288ee55f314e3c3c287bc"
+        }
+      }
+    ],
+    "detection": {
+      "activation": null,
+      "features": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/reasoning-analysis/features.json",
+        "sha256": "5ba37bea9ec8a79152a14abc860de2080bc0f43ee8e95c45c9e57f552cfa3fe7"
+      },
+      "labels": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/reasoning-analysis/labels.json",
+        "sha256": "b44662bff10c6d343a9bcf031b640d0d4c4eb8ef9174cfabed632c10c269a12a"
+      },
+      "rule": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/reasoning-analysis/analysis/review-reasoning_analysis_rule/rule.json",
+        "sha256": "b3654337f0560c6f956eb58cef0dff3fd62663bfcf58028dd298eade5baf5fa9"
+      },
+      "split": "detection_test",
+      "text": {
+        "calibration": {
+          "format": "json",
+          "path": ".cache/review-completion-validation/examples-current/reasoning-analysis/text-calibration.json",
+          "sha256": "5b74ef4bbe5eed487fb96ca7abe19d1054420bacbf3f1a61296378aa2c4492e7"
+        },
+        "scores": {
+          "format": "json",
+          "path": ".cache/review-completion-validation/examples-current/reasoning-analysis/text-final/scores.json",
+          "sha256": "97011415b4378a4b6495dd09c07fdfb47cdb231ecbe6bfd8b5e5f06e7184d91e"
+        }
+      }
+    }
+  },
+  "operation": "analysis.reasoning",
+  "request_id": "review-reasoning_analysis",
+  "schema_version": 1
+}

@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/openai/gpt-oss",
+  "revision": "243a1b02767da73bd2e3975be250afa801635866",
+  "files": {
+    "apply_patch.py": "cd93563e9e1b2aebc78a418543f687b43696676647dfd739f49f456fa369ac21",
+    "LICENSE": "6fef6293093d20293deb89ad51ba959038127f74ba779d874d0c7218798da3d3"
+  },
+  "notice_files": []
+}

@@ -1,0 +1,73 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/patch/planner",
+    "label_kind": "fixture",
+    "random_seed": 17,
+    "tokenizer": {
+      "format": "json",
+      "path": ".cache/gpt-oss-assets/tokenizer.json",
+      "sha256": "0614fe83cadab421296e664e1f48f4261fa8fef6e03e63bb75c20f38e37d07d3"
+    }
+  },
+  "inputs": {
+    "allocation": {
+      "cost_basis": "Offline fixture; no provisioned compute.",
+      "max_cost_usd": "0",
+      "max_jobs": 256,
+      "max_output_tokens": 100000,
+      "max_seconds": 200000,
+      "usd_per_second": "0"
+    },
+    "episode_config": {
+      "artifact_root": ".cache/review-completion-validation/examples-current/patch/episodes",
+      "date": "2026-09-09",
+      "evaluation": {
+        "artifact_root": ".cache/review-completion-validation/examples-current/patch/evaluations",
+        "max_jobs": 64
+      },
+      "generation": {
+        "max_new_tokens": 16,
+        "max_seconds": 30,
+        "temperature": 1.0
+      },
+      "max_consecutive_failures": 2,
+      "max_feedback_chars": 1024,
+      "max_output_tokens": 64,
+      "max_seconds": 600,
+      "max_tool_calls": 3,
+      "model": {
+        "artifact_root": ".cache/review-completion-validation/examples-current/patch/model",
+        "max_context_tokens": 4096,
+        "model_path": ".cache/gpt-oss-assets",
+        "profile": "tiny-gpt-oss-cpu"
+      },
+      "reasoning_effort": "medium",
+      "sandbox": {
+        "artifact_root": ".cache/review-completion-validation/examples-current/patch/sandbox",
+        "cpus": 1,
+        "docker_executable": "docker",
+        "docker_host": "unix:///var/run/docker.sock",
+        "image": "python:3.14.7-slim@sha256:cad9a2c871761c413caa6fdd6441c783451e740a48aaeba60ae62a8b53525ef6",
+        "max_file_bytes": 1048576,
+        "max_output_bytes": 65536,
+        "max_snapshot_bytes": 8388608,
+        "memory_mb": 256,
+        "pids_limit": 32,
+        "timeout_seconds": 5
+      },
+      "tasks": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/patch/tasks.json",
+        "sha256": "dede9a3b9b7f5ed21e1fcde199386965350c078e3c494465498dc71939ea2f38"
+      }
+    },
+    "instructions": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/patch/planner/instructions/instructions.json",
+      "sha256": "cff181d01dbdb19159174f8ded8b0a91416b5ffbd83d7bb30c1384a34bd62a60"
+    }
+  },
+  "operation": "intervention.plan_patch_episodes",
+  "request_id": "review-patch_episodes",
+  "schema_version": 1
+}

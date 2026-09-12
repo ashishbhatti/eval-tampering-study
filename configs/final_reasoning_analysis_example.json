@@ -1,0 +1,65 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/final-detection-example/study/analysis",
+    "bootstrap_seed": 19,
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "annotations": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-detection-example/reasoning-annotations/annotations.json",
+      "sha256": "b5d1df217f4c24abfa1f1953063e2fff46203d9107f3827e13d5fe62e89b624c"
+    },
+    "audits": [],
+    "detection": {
+      "activation": {
+        "monitor": {
+          "format": "json",
+          "path": ".cache/review-completion-validation/examples-current/final-detection-example/study/probe/monitor.json",
+          "sha256": "f6493456d19b517893691c8526f546aa8e3b748e985466497f446909ab105223"
+        },
+        "scores": {
+          "format": "json",
+          "path": ".cache/review-completion-validation/examples-current/final-detection-validation/activation_score.response.json",
+          "sha256": "57913442df32b5e6ad5ff490ed03c6094261167dc7ac416d372ea7752fdb9e72"
+        }
+      },
+      "collection": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-detection-example/collection/sampling-summary.json",
+        "sha256": "a4d0a5b9ca912d43e9056fc37d292ca5abb8cf1165c67e6acac5d9250fa42d3b"
+      },
+      "features": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-detection-example/collection/features.json",
+        "sha256": "199499a0e79d753e25e25be27f8b1d18fc178492cb48e05a8816cc55ebd7f302"
+      },
+      "labels": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-detection-example/collection/labels.json",
+        "sha256": "8aa05a05e49c9d4128d64c0bc5de6ad88224d54a0be3203c9badd6159aae56cf"
+      },
+      "rule": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/final-detection-example/study/analysis-rule.json",
+        "sha256": "b5810fbb8e12a46719e8a3c2347e4baa3a6138c116ac799dfa0817561defd857"
+      },
+      "split": "detection_test",
+      "text": {
+        "calibration": {
+          "format": "json",
+          "path": ".cache/review-completion-validation/examples-current/final-detection-example/study/text-calibration.json",
+          "sha256": "4422a2157241a9bcfdbe03a96cabb97743203edf3f1b63d06d6faddbf78b4d5e"
+        },
+        "scores": {
+          "format": "json",
+          "path": ".cache/review-completion-validation/examples-current/final-detection-example/text-final/scores.json",
+          "sha256": "7ada71f58723918e0d58123dadc09bcf8443f5b68f32399b72830ad875566cb1"
+        }
+      }
+    }
+  },
+  "operation": "analysis.reasoning",
+  "request_id": "reasoning_analysis-copy",
+  "schema_version": 1
+}

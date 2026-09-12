@@ -1,0 +1,26 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/final-patch-example-checked/study/manifests",
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "acceptance": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-patch-example-checked/study/manifests/accepted-fixture/acceptance.json",
+      "sha256": "9fbe87eab63592547ab127d30cd0411aa5d88d6d899f5d3d8f771cf89c3d58ab"
+    },
+    "collection": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-patch-example-checked/final-collection/sampling-summary.json",
+      "sha256": "e63875c1b946be2635a3d09a11e68036afc08f709501cde1156673591ce6dcd2"
+    },
+    "instructions": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-patch-example-checked/final-instructions/instructions.json",
+      "sha256": "e75ae129725f457eff05f72dc5524ee171453dbc4db09e964b0c779381f15386"
+    }
+  },
+  "operation": "experiment.patch",
+  "request_id": "patch_binding-copy",
+  "schema_version": 1
+}

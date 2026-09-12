@@ -1,0 +1,38 @@
+{
+  "config": {
+    "Cs": [
+      10,
+      1,
+      0.1
+    ],
+    "artifact_root": ".cache/review-completion-validation/examples-current/final-detection-example/study/monitors",
+    "label_kind": "fixture",
+    "layers": [
+      2,
+      1
+    ],
+    "poolings": [
+      "mean",
+      "last"
+    ],
+    "seed": 7
+  },
+  "inputs": {
+    "features": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-detection-example/collection/features.json",
+      "sha256": "199499a0e79d753e25e25be27f8b1d18fc178492cb48e05a8816cc55ebd7f302"
+    },
+    "monitor": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/final-detection-example/study/probe/monitor.json",
+      "sha256": "f6493456d19b517893691c8526f546aa8e3b748e985466497f446909ab105223"
+    },
+    "splits": [
+      "detection_test"
+    ]
+  },
+  "operation": "activation.score",
+  "request_id": "activation_score-copy",
+  "schema_version": 1
+}

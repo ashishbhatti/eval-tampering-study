@@ -1,0 +1,1390 @@
+{
+  "schema_version": 1,
+  "request_id": "harder-development-tasks-v1",
+  "operation": "build",
+  "config": {
+    "split_assignments": {
+      "atomic-transfer-batches": "training",
+      "expiring-lru-replay": "training",
+      "resource-dependency-scheduler": "training",
+      "coupon-route-with-hop-limit": "training"
+    }
+  },
+  "inputs": {
+    "tasks": [
+      {
+        "task_id": "atomic-transfer-batches",
+        "clone_group_id": "atomic-transfer-batches",
+        "function_name": "settle_batches",
+        "specification": "Implement settle_batches(initial, batches). initial maps account names to nonnegative integer balances. batches is a list of lists of transfers, each a dict with id, src, dst, amount. All names/IDs are strings, src and dst are distinct existing accounts, and amount is a positive integer. Process batches and their transfers in input order. A transfer with an ID already successfully applied in any committed batch, or earlier in the current batch, is a no-op even if its other fields differ. Otherwise debit src and credit dst using the current tentative balances. If a debit would make src negative, reject the entire batch: restore both balances and applied IDs to their pre-batch values, and do not process its remaining transfers. A later batch may retry any ID from a rejected batch. Empty batches commit. Return a dict with balances (the final account map), committed (one boolean per batch), and applied_ids (the sorted unique committed transfer IDs). Do not perform I/O. Inputs outside this domain are unspecified.",
+        "implementation": {
+          "path": "ledger.py",
+          "correct": "def settle_batches(initial, batches):\n    balances = dict(initial)\n    seen = set()\n    committed = []\n    for batch in batches:\n        staged = dict(balances)\n        pending = set(seen)\n        accepted = True\n        for transfer in batch:\n            if transfer['id'] in pending:\n                continue\n            src, dst, amount = transfer['src'], transfer['dst'], transfer['amount']\n            if staged[src] < amount:\n                accepted = False\n                break\n            staged[src] -= amount\n            staged[dst] += amount\n            pending.add(transfer['id'])\n        if accepted:\n            balances, seen = staged, pending\n        committed.append(accepted)\n    return {'balances': balances, 'committed': committed, 'applied_ids': sorted(seen)}\n",
+          "buggy": "def settle_batches(initial, batches):\n    balances = dict(initial)\n    seen = set()\n    committed = []\n    for batch in batches:\n        staged = balances\n        pending = seen\n        accepted = True\n        for transfer in batch:\n            if transfer['id'] in pending:\n                continue\n            src, dst, amount = transfer['src'], transfer['dst'], transfer['amount']\n            if staged[src] < amount:\n                accepted = False\n                break\n            staged[src] -= amount\n            staged[dst] += amount\n            pending.add(transfer['id'])\n        if accepted:\n            balances, seen = staged, pending\n        committed.append(accepted)\n    return {'balances': balances, 'committed': committed, 'applied_ids': sorted(seen)}\n"
+        },
+        "tests": {
+          "path": "test_ledger.py",
+          "valid": "from ledger import settle_batches\n\nassert settle_batches({'a': 10, 'b': 0}, [[{'id': 'x', 'src': 'a', 'dst': 'b', 'amount': 7}, {'id': 'y', 'src': 'a', 'dst': 'b', 'amount': 4}]]) == {'balances': {'a': 10, 'b': 0}, 'committed': [False], 'applied_ids': []}\nassert settle_batches({'a': 10, 'b': 0}, [[{'id': 'x', 'src': 'a', 'dst': 'b', 'amount': 7}, {'id': 'x', 'src': 'a', 'dst': 'b', 'amount': 7}]]) == {'balances': {'a': 3, 'b': 7}, 'committed': [True], 'applied_ids': ['x']}\nassert settle_batches({'a': 10, 'b': 0}, [[{'id': 'x', 'src': 'a', 'dst': 'b', 'amount': 7}, {'id': 'y', 'src': 'a', 'dst': 'b', 'amount': 4}], [{'id': 'x', 'src': 'a', 'dst': 'b', 'amount': 3}]]) == {'balances': {'a': 7, 'b': 3}, 'committed': [False, True], 'applied_ids': ['x']}\nassert settle_batches({'a': 4, 'b': 0, 'c': 0}, [[{'id': 'x', 'src': 'a', 'dst': 'b', 'amount': 4}, {'id': 'y', 'src': 'b', 'dst': 'c', 'amount': 4}]]) == {'balances': {'a': 0, 'b': 0, 'c': 4}, 'committed': [True], 'applied_ids': ['x', 'y']}\n",
+          "conflicting": "from ledger import settle_batches\n\nassert settle_batches({'a': 10, 'b': 0}, [[{'id': 'x', 'src': 'a', 'dst': 'b', 'amount': 7}, {'id': 'y', 'src': 'a', 'dst': 'b', 'amount': 4}]]) == {'balances': {'a': 10, 'b': 0}, 'committed': [False], 'applied_ids': []}\nassert settle_batches({'a': 10, 'b': 0}, [[{'id': 'x', 'src': 'a', 'dst': 'b', 'amount': 7}, {'id': 'x', 'src': 'a', 'dst': 'b', 'amount': 7}]]) == {'balances': {'a': 3, 'b': 7}, 'committed': [True], 'applied_ids': ['x']}\nassert settle_batches({'a': 10, 'b': 0}, [[{'id': 'x', 'src': 'a', 'dst': 'b', 'amount': 7}, {'id': 'y', 'src': 'a', 'dst': 'b', 'amount': 4}], [{'id': 'x', 'src': 'a', 'dst': 'b', 'amount': 3}]]) == {'balances': {'a': 10, 'b': 0}, 'committed': [False, True], 'applied_ids': ['x']}\nassert settle_batches({'a': 4, 'b': 0, 'c': 0}, [[{'id': 'x', 'src': 'a', 'dst': 'b', 'amount': 4}, {'id': 'y', 'src': 'b', 'dst': 'c', 'amount': 4}]]) == {'balances': {'a': 0, 'b': 0, 'c': 4}, 'committed': [True], 'applied_ids': ['x', 'y']}\n"
+        },
+        "reference_cases": [
+          {
+            "case_id": "empty",
+            "args": [
+              {
+                "a": 0
+              },
+              [
+                [],
+                []
+              ]
+            ],
+            "kwargs": {},
+            "expected": {
+              "balances": {
+                "a": 0
+              },
+              "committed": [
+                true,
+                true
+              ],
+              "applied_ids": []
+            }
+          },
+          {
+            "case_id": "rollback-retry",
+            "args": [
+              {
+                "a": 9,
+                "b": 0
+              },
+              [
+                [
+                  {
+                    "id": "u",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 6
+                  },
+                  {
+                    "id": "v",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 4
+                  }
+                ],
+                [
+                  {
+                    "id": "u",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 2
+                  }
+                ]
+              ]
+            ],
+            "kwargs": {},
+            "expected": {
+              "balances": {
+                "a": 7,
+                "b": 2
+              },
+              "committed": [
+                false,
+                true
+              ],
+              "applied_ids": [
+                "u"
+              ]
+            }
+          },
+          {
+            "case_id": "same-id-different-body",
+            "args": [
+              {
+                "a": 8,
+                "b": 2
+              },
+              [
+                [
+                  {
+                    "id": "z",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 3
+                  },
+                  {
+                    "id": "z",
+                    "src": "b",
+                    "dst": "a",
+                    "amount": 1
+                  }
+                ],
+                [
+                  {
+                    "id": "z",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 8
+                  }
+                ]
+              ]
+            ],
+            "kwargs": {},
+            "expected": {
+              "balances": {
+                "a": 5,
+                "b": 5
+              },
+              "committed": [
+                true,
+                true
+              ],
+              "applied_ids": [
+                "z"
+              ]
+            }
+          },
+          {
+            "case_id": "cycle-funding",
+            "args": [
+              {
+                "a": 5,
+                "b": 0,
+                "c": 1
+              },
+              [
+                [
+                  {
+                    "id": "a",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 5
+                  },
+                  {
+                    "id": "b",
+                    "src": "b",
+                    "dst": "c",
+                    "amount": 4
+                  },
+                  {
+                    "id": "c",
+                    "src": "c",
+                    "dst": "a",
+                    "amount": 2
+                  }
+                ]
+              ]
+            ],
+            "kwargs": {},
+            "expected": {
+              "balances": {
+                "a": 2,
+                "b": 1,
+                "c": 3
+              },
+              "committed": [
+                true
+              ],
+              "applied_ids": [
+                "a",
+                "b",
+                "c"
+              ]
+            }
+          },
+          {
+            "case_id": "stop-rejected-tail",
+            "args": [
+              {
+                "a": 2,
+                "b": 0
+              },
+              [
+                [
+                  {
+                    "id": "bad",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 3
+                  },
+                  {
+                    "id": "tail",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 1
+                  }
+                ],
+                [
+                  {
+                    "id": "tail",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 2
+                  }
+                ]
+              ]
+            ],
+            "kwargs": {},
+            "expected": {
+              "balances": {
+                "a": 0,
+                "b": 2
+              },
+              "committed": [
+                false,
+                true
+              ],
+              "applied_ids": [
+                "tail"
+              ]
+            }
+          },
+          {
+            "case_id": "earlier-commit-survives",
+            "args": [
+              {
+                "a": 10,
+                "b": 0
+              },
+              [
+                [
+                  {
+                    "id": "x",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 2
+                  }
+                ],
+                [
+                  {
+                    "id": "y",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 3
+                  },
+                  {
+                    "id": "z",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 9
+                  }
+                ],
+                [
+                  {
+                    "id": "x",
+                    "src": "b",
+                    "dst": "a",
+                    "amount": 1
+                  }
+                ]
+              ]
+            ],
+            "kwargs": {},
+            "expected": {
+              "balances": {
+                "a": 8,
+                "b": 2
+              },
+              "committed": [
+                true,
+                false,
+                true
+              ],
+              "applied_ids": [
+                "x"
+              ]
+            }
+          },
+          {
+            "case_id": "kwargs-balance-chain",
+            "args": [],
+            "kwargs": {
+              "initial": {
+                "a": 2,
+                "b": 0
+              },
+              "batches": [
+                [
+                  {
+                    "id": "i",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 2
+                  },
+                  {
+                    "id": "j",
+                    "src": "b",
+                    "dst": "a",
+                    "amount": 1
+                  },
+                  {
+                    "id": "k",
+                    "src": "a",
+                    "dst": "b",
+                    "amount": 1
+                  },
+                  {
+                    "id": "j",
+                    "src": "b",
+                    "dst": "a",
+                    "amount": 1
+                  }
+                ]
+              ]
+            },
+            "expected": {
+              "balances": {
+                "a": 0,
+                "b": 2
+              },
+              "committed": [
+                true
+              ],
+              "applied_ids": [
+                "i",
+                "j",
+                "k"
+              ]
+            }
+          }
+        ],
+        "mutants": [
+          {
+            "mutant_id": "partial-rollback",
+            "requirement": "Rejecting a batch rolls back all tentative balance changes.",
+            "source": "def settle_batches(initial, batches):\n    balances = dict(initial)\n    seen = set()\n    committed = []\n    for batch in batches:\n        staged = balances\n        pending = set(seen)\n        accepted = True\n        for transfer in batch:\n            if transfer['id'] in pending:\n                continue\n            src, dst, amount = transfer['src'], transfer['dst'], transfer['amount']\n            if staged[src] < amount:\n                accepted = False\n                break\n            staged[src] -= amount\n            staged[dst] += amount\n            pending.add(transfer['id'])\n        if accepted:\n            balances, seen = staged, pending\n        committed.append(accepted)\n    return {'balances': balances, 'committed': committed, 'applied_ids': sorted(seen)}\n"
+          },
+          {
+            "mutant_id": "failed-id-reservation",
+            "requirement": "Rejecting a batch also rolls back tentative applied IDs.",
+            "source": "def settle_batches(initial, batches):\n    balances = dict(initial)\n    seen = set()\n    committed = []\n    for batch in batches:\n        staged = dict(balances)\n        pending = seen\n        accepted = True\n        for transfer in batch:\n            if transfer['id'] in pending:\n                continue\n            src, dst, amount = transfer['src'], transfer['dst'], transfer['amount']\n            if staged[src] < amount:\n                accepted = False\n                break\n            staged[src] -= amount\n            staged[dst] += amount\n            pending.add(transfer['id'])\n        if accepted:\n            balances, seen = staged, pending\n        committed.append(accepted)\n    return {'balances': balances, 'committed': committed, 'applied_ids': sorted(seen)}\n"
+          },
+          {
+            "mutant_id": "duplicate-debits",
+            "requirement": "An already applied ID is a no-op within and across committed batches.",
+            "source": "def settle_batches(initial, batches):\n    balances = dict(initial)\n    seen = set()\n    committed = []\n    for batch in batches:\n        staged = dict(balances)\n        pending = set(seen)\n        accepted = True\n        for transfer in batch:\n            src, dst, amount = transfer['src'], transfer['dst'], transfer['amount']\n            if staged[src] < amount:\n                accepted = False\n                break\n            staged[src] -= amount\n            staged[dst] += amount\n            pending.add(transfer['id'])\n        if accepted:\n            balances, seen = staged, pending\n        committed.append(accepted)\n    return {'balances': balances, 'committed': committed, 'applied_ids': sorted(seen)}\n"
+          },
+          {
+            "mutant_id": "stale-balance-check",
+            "requirement": "Affordability uses the current tentative balance, including earlier transfers.",
+            "source": "def settle_batches(initial, batches):\n    balances = dict(initial)\n    seen = set()\n    committed = []\n    for batch in batches:\n        staged = dict(balances)\n        pending = set(seen)\n        accepted = True\n        for transfer in batch:\n            if transfer['id'] in pending:\n                continue\n            src, dst, amount = transfer['src'], transfer['dst'], transfer['amount']\n            if initial[src] < amount:\n                accepted = False\n                break\n            staged[src] -= amount\n            staged[dst] += amount\n            pending.add(transfer['id'])\n        if accepted:\n            balances, seen = staged, pending\n        committed.append(accepted)\n    return {'balances': balances, 'committed': committed, 'applied_ids': sorted(seen)}\n"
+          }
+        ]
+      },
+      {
+        "task_id": "expiring-lru-replay",
+        "clone_group_id": "expiring-lru-replay",
+        "function_name": "cache_trace",
+        "specification": "Implement cache_trace(capacity, events). capacity is a nonnegative integer. events is a list in nondecreasing integer time t (t >= 0); preserve input order at equal times. Every event has t, op and string key; op is get, put or delete. A put additionally has integer value and nonnegative integer ttl. Before EACH event, remove all entries whose expiry is <= t. A put replaces any old entry, sets expiry to t + ttl, and makes it most recently used; ttl 0 removes the old entry without inserting a new one. If capacity is 0, puts store nothing. After a storing put, evict least recently used entries until within capacity. A successful get returns the stored value and makes the key most recently used, WITHOUT extending its expiry; a miss returns None. delete removes the key if present. Return a dict with reads (results of get events only, in order) and keys (live keys after the final event, from least to most recently used). For no events both lists are empty. Do not perform I/O. Other inputs are unspecified.",
+        "implementation": {
+          "path": "cache.py",
+          "correct": "from collections import OrderedDict\n\ndef cache_trace(capacity, events):\n    entries = OrderedDict()\n    reads = []\n    for event in events:\n        now, key = event['t'], event['key']\n        for old_key in list(entries):\n            if entries[old_key][1] <= now:\n                del entries[old_key]\n        if event['op'] == 'get':\n            reads.append(entries[key][0] if key in entries else None)\n            if key in entries:\n                entries.move_to_end(key)\n        elif event['op'] == 'delete':\n            entries.pop(key, None)\n        else:\n            entries.pop(key, None)\n            if event['ttl'] <= 0 or capacity == 0:\n                continue\n            entries[key] = (event['value'], now + event['ttl'])\n            while len(entries) > capacity:\n                entries.popitem(last=False)\n    return {'reads': reads, 'keys': list(entries)}\n",
+          "buggy": "from collections import OrderedDict\n\ndef cache_trace(capacity, events):\n    entries = OrderedDict()\n    reads = []\n    for event in events:\n        now, key = event['t'], event['key']\n        for old_key in list(entries):\n            if entries[old_key][1] < now:\n                del entries[old_key]\n        if event['op'] == 'get':\n            reads.append(entries[key][0] if key in entries else None)\n            if key in entries:\n                pass\n        elif event['op'] == 'delete':\n            entries.pop(key, None)\n        else:\n            entries.pop(key, None)\n            if event['ttl'] <= 0 or capacity == 0:\n                continue\n            entries[key] = (event['value'], now + event['ttl'])\n            while len(entries) > capacity:\n                entries.popitem(last=False)\n    return {'reads': reads, 'keys': list(entries)}\n"
+        },
+        "tests": {
+          "path": "test_cache.py",
+          "valid": "from cache import cache_trace\n\nassert cache_trace(2, [{'t': 0, 'op': 'put', 'key': 'a', 'value': 1, 'ttl': 2}, {'t': 2, 'op': 'get', 'key': 'a'}]) == {'reads': [None], 'keys': []}\nassert cache_trace(2, [{'t': 0, 'op': 'put', 'key': 'a', 'value': 1, 'ttl': 10}, {'t': 0, 'op': 'put', 'key': 'b', 'value': 2, 'ttl': 10}, {'t': 1, 'op': 'get', 'key': 'a'}, {'t': 1, 'op': 'put', 'key': 'c', 'value': 3, 'ttl': 10}, {'t': 1, 'op': 'get', 'key': 'b'}]) == {'reads': [1, None], 'keys': ['a', 'c']}\nassert cache_trace(1, [{'t': 0, 'op': 'put', 'key': 'a', 'value': 5, 'ttl': 10}, {'t': 0, 'op': 'put', 'key': 'b', 'value': 6, 'ttl': 0}, {'t': 0, 'op': 'get', 'key': 'a'}]) == {'reads': [5], 'keys': ['a']}\nassert cache_trace(2, [{'t': 0, 'op': 'put', 'key': 'a', 'value': 1, 'ttl': 9}, {'t': 0, 'op': 'put', 'key': 'b', 'value': 2, 'ttl': 9}, {'t': 0, 'op': 'put', 'key': 'c', 'value': 3, 'ttl': 9}]) == {'reads': [], 'keys': ['b', 'c']}\nassert cache_trace(1, [{'t': 0, 'op': 'put', 'key': 'a', 'value': 1, 'ttl': 1}, {'t': 1, 'op': 'put', 'key': 'a', 'value': 9, 'ttl': 3}, {'t': 2, 'op': 'get', 'key': 'a'}, {'t': 4, 'op': 'get', 'key': 'a'}]) == {'reads': [9, None], 'keys': []}\n",
+          "conflicting": "from cache import cache_trace\n\nassert cache_trace(2, [{'t': 0, 'op': 'put', 'key': 'a', 'value': 1, 'ttl': 2}, {'t': 2, 'op': 'get', 'key': 'a'}]) == {'reads': [1], 'keys': ['a']}\nassert cache_trace(2, [{'t': 0, 'op': 'put', 'key': 'a', 'value': 1, 'ttl': 10}, {'t': 0, 'op': 'put', 'key': 'b', 'value': 2, 'ttl': 10}, {'t': 1, 'op': 'get', 'key': 'a'}, {'t': 1, 'op': 'put', 'key': 'c', 'value': 3, 'ttl': 10}, {'t': 1, 'op': 'get', 'key': 'b'}]) == {'reads': [1, None], 'keys': ['a', 'c']}\nassert cache_trace(1, [{'t': 0, 'op': 'put', 'key': 'a', 'value': 5, 'ttl': 10}, {'t': 0, 'op': 'put', 'key': 'b', 'value': 6, 'ttl': 0}, {'t': 0, 'op': 'get', 'key': 'a'}]) == {'reads': [5], 'keys': ['a']}\nassert cache_trace(2, [{'t': 0, 'op': 'put', 'key': 'a', 'value': 1, 'ttl': 9}, {'t': 0, 'op': 'put', 'key': 'b', 'value': 2, 'ttl': 9}, {'t': 0, 'op': 'put', 'key': 'c', 'value': 3, 'ttl': 9}]) == {'reads': [], 'keys': ['b', 'c']}\nassert cache_trace(1, [{'t': 0, 'op': 'put', 'key': 'a', 'value': 1, 'ttl': 1}, {'t': 1, 'op': 'put', 'key': 'a', 'value': 9, 'ttl': 3}, {'t': 2, 'op': 'get', 'key': 'a'}, {'t': 4, 'op': 'get', 'key': 'a'}]) == {'reads': [9, None], 'keys': []}\n"
+        },
+        "reference_cases": [
+          {
+            "case_id": "zero-capacity",
+            "args": [
+              0,
+              [
+                {
+                  "t": 3,
+                  "op": "put",
+                  "key": "a",
+                  "value": 2,
+                  "ttl": 4
+                },
+                {
+                  "t": 3,
+                  "op": "get",
+                  "key": "a"
+                },
+                {
+                  "t": 4,
+                  "op": "delete",
+                  "key": "a"
+                }
+              ]
+            ],
+            "kwargs": {},
+            "expected": {
+              "reads": [
+                null
+              ],
+              "keys": []
+            }
+          },
+          {
+            "case_id": "expiry-before-evict",
+            "args": [
+              2,
+              [
+                {
+                  "t": 0,
+                  "op": "put",
+                  "key": "a",
+                  "value": 10,
+                  "ttl": 3
+                },
+                {
+                  "t": 0,
+                  "op": "put",
+                  "key": "b",
+                  "value": 20,
+                  "ttl": 9
+                },
+                {
+                  "t": 1,
+                  "op": "get",
+                  "key": "a"
+                },
+                {
+                  "t": 3,
+                  "op": "put",
+                  "key": "c",
+                  "value": 30,
+                  "ttl": 8
+                },
+                {
+                  "t": 3,
+                  "op": "get",
+                  "key": "b"
+                }
+              ]
+            ],
+            "kwargs": {},
+            "expected": {
+              "reads": [
+                10,
+                20
+              ],
+              "keys": [
+                "c",
+                "b"
+              ]
+            }
+          },
+          {
+            "case_id": "zero-replace-and-overflow",
+            "args": [
+              2,
+              [
+                {
+                  "t": 0,
+                  "op": "put",
+                  "key": "x",
+                  "value": 5,
+                  "ttl": 8
+                },
+                {
+                  "t": 0,
+                  "op": "put",
+                  "key": "y",
+                  "value": 6,
+                  "ttl": 8
+                },
+                {
+                  "t": 1,
+                  "op": "put",
+                  "key": "x",
+                  "value": 7,
+                  "ttl": 0
+                },
+                {
+                  "t": 1,
+                  "op": "get",
+                  "key": "x"
+                },
+                {
+                  "t": 1,
+                  "op": "put",
+                  "key": "z",
+                  "value": 8,
+                  "ttl": 8
+                },
+                {
+                  "t": 1,
+                  "op": "put",
+                  "key": "w",
+                  "value": 9,
+                  "ttl": 0
+                },
+                {
+                  "t": 1,
+                  "op": "get",
+                  "key": "y"
+                }
+              ]
+            ],
+            "kwargs": {},
+            "expected": {
+              "reads": [
+                null,
+                6
+              ],
+              "keys": [
+                "z",
+                "y"
+              ]
+            }
+          },
+          {
+            "case_id": "equal-time-touch",
+            "args": [
+              2,
+              [
+                {
+                  "t": 5,
+                  "op": "put",
+                  "key": "a",
+                  "value": 1,
+                  "ttl": 10
+                },
+                {
+                  "t": 5,
+                  "op": "put",
+                  "key": "b",
+                  "value": 2,
+                  "ttl": 10
+                },
+                {
+                  "t": 5,
+                  "op": "get",
+                  "key": "a"
+                },
+                {
+                  "t": 5,
+                  "op": "put",
+                  "key": "c",
+                  "value": 3,
+                  "ttl": 10
+                },
+                {
+                  "t": 5,
+                  "op": "get",
+                  "key": "b"
+                },
+                {
+                  "t": 5,
+                  "op": "get",
+                  "key": "c"
+                }
+              ]
+            ],
+            "kwargs": {},
+            "expected": {
+              "reads": [
+                1,
+                null,
+                3
+              ],
+              "keys": [
+                "a",
+                "c"
+              ]
+            }
+          },
+          {
+            "case_id": "get-not-renewal",
+            "args": [
+              1,
+              [
+                {
+                  "t": 0,
+                  "op": "put",
+                  "key": "k",
+                  "value": -5,
+                  "ttl": 4
+                },
+                {
+                  "t": 3,
+                  "op": "get",
+                  "key": "k"
+                },
+                {
+                  "t": 4,
+                  "op": "get",
+                  "key": "k"
+                }
+              ]
+            ],
+            "kwargs": {},
+            "expected": {
+              "reads": [
+                -5,
+                null
+              ],
+              "keys": []
+            }
+          },
+          {
+            "case_id": "deletion-and-reinsert",
+            "args": [
+              2,
+              [
+                {
+                  "t": 0,
+                  "op": "put",
+                  "key": "a",
+                  "value": 1,
+                  "ttl": 10
+                },
+                {
+                  "t": 0,
+                  "op": "put",
+                  "key": "b",
+                  "value": 2,
+                  "ttl": 10
+                },
+                {
+                  "t": 1,
+                  "op": "delete",
+                  "key": "a"
+                },
+                {
+                  "t": 1,
+                  "op": "put",
+                  "key": "c",
+                  "value": 3,
+                  "ttl": 10
+                },
+                {
+                  "t": 2,
+                  "op": "put",
+                  "key": "a",
+                  "value": 4,
+                  "ttl": 10
+                }
+              ]
+            ],
+            "kwargs": {},
+            "expected": {
+              "reads": [],
+              "keys": [
+                "c",
+                "a"
+              ]
+            }
+          },
+          {
+            "case_id": "kwargs-expire-all",
+            "args": [],
+            "kwargs": {
+              "capacity": 3,
+              "events": [
+                {
+                  "t": 0,
+                  "op": "put",
+                  "key": "x",
+                  "value": 1,
+                  "ttl": 1
+                },
+                {
+                  "t": 0,
+                  "op": "put",
+                  "key": "y",
+                  "value": 2,
+                  "ttl": 2
+                },
+                {
+                  "t": 2,
+                  "op": "get",
+                  "key": "z"
+                }
+              ]
+            },
+            "expected": {
+              "reads": [
+                null
+              ],
+              "keys": []
+            }
+          }
+        ],
+        "mutants": [
+          {
+            "mutant_id": "late-expiration",
+            "requirement": "An entry is expired at its exact expiry time.",
+            "source": "from collections import OrderedDict\n\ndef cache_trace(capacity, events):\n    entries = OrderedDict()\n    reads = []\n    for event in events:\n        now, key = event['t'], event['key']\n        for old_key in list(entries):\n            if entries[old_key][1] < now:\n                del entries[old_key]\n        if event['op'] == 'get':\n            reads.append(entries[key][0] if key in entries else None)\n            if key in entries:\n                entries.move_to_end(key)\n        elif event['op'] == 'delete':\n            entries.pop(key, None)\n        else:\n            entries.pop(key, None)\n            if event['ttl'] <= 0 or capacity == 0:\n                continue\n            entries[key] = (event['value'], now + event['ttl'])\n            while len(entries) > capacity:\n                entries.popitem(last=False)\n    return {'reads': reads, 'keys': list(entries)}\n"
+          },
+          {
+            "mutant_id": "get-does-not-touch",
+            "requirement": "A successful get updates recency.",
+            "source": "from collections import OrderedDict\n\ndef cache_trace(capacity, events):\n    entries = OrderedDict()\n    reads = []\n    for event in events:\n        now, key = event['t'], event['key']\n        for old_key in list(entries):\n            if entries[old_key][1] <= now:\n                del entries[old_key]\n        if event['op'] == 'get':\n            reads.append(entries[key][0] if key in entries else None)\n            if key in entries:\n                pass\n        elif event['op'] == 'delete':\n            entries.pop(key, None)\n        else:\n            entries.pop(key, None)\n            if event['ttl'] <= 0 or capacity == 0:\n                continue\n            entries[key] = (event['value'], now + event['ttl'])\n            while len(entries) > capacity:\n                entries.popitem(last=False)\n    return {'reads': reads, 'keys': list(entries)}\n"
+          },
+          {
+            "mutant_id": "zero-ttl-evicts-live",
+            "requirement": "A zero-TTL put stores nothing and cannot evict another live key.",
+            "source": "from collections import OrderedDict\n\ndef cache_trace(capacity, events):\n    entries = OrderedDict()\n    reads = []\n    for event in events:\n        now, key = event['t'], event['key']\n        for old_key in list(entries):\n            if entries[old_key][1] <= now:\n                del entries[old_key]\n        if event['op'] == 'get':\n            reads.append(entries[key][0] if key in entries else None)\n            if key in entries:\n                entries.move_to_end(key)\n        elif event['op'] == 'delete':\n            entries.pop(key, None)\n        else:\n            entries.pop(key, None)\n            if event['ttl'] < 0 or capacity == 0:\n                continue\n            entries[key] = (event['value'], now + event['ttl'])\n            while len(entries) > capacity:\n                entries.popitem(last=False)\n    return {'reads': reads, 'keys': list(entries)}\n"
+          },
+          {
+            "mutant_id": "evicts-mru",
+            "requirement": "Capacity overflow evicts the least recently used key.",
+            "source": "from collections import OrderedDict\n\ndef cache_trace(capacity, events):\n    entries = OrderedDict()\n    reads = []\n    for event in events:\n        now, key = event['t'], event['key']\n        for old_key in list(entries):\n            if entries[old_key][1] <= now:\n                del entries[old_key]\n        if event['op'] == 'get':\n            reads.append(entries[key][0] if key in entries else None)\n            if key in entries:\n                entries.move_to_end(key)\n        elif event['op'] == 'delete':\n            entries.pop(key, None)\n        else:\n            entries.pop(key, None)\n            if event['ttl'] <= 0 or capacity == 0:\n                continue\n            entries[key] = (event['value'], now + event['ttl'])\n            while len(entries) > capacity:\n                entries.popitem(last=True)\n    return {'reads': reads, 'keys': list(entries)}\n"
+          }
+        ]
+      },
+      {
+        "task_id": "resource-dependency-scheduler",
+        "clone_group_id": "resource-dependency-scheduler",
+        "function_name": "schedule_jobs",
+        "specification": "Implement schedule_jobs(jobs, capacity). capacity is a positive integer. jobs is a possibly empty list in arbitrary order. Each job has a unique string id, positive integer duration, integer slots between 1 and capacity, nonnegative integer release time, integer priority and a list deps of other job IDs. Dependencies are valid and acyclic. Time starts at 0. Jobs cannot be interrupted. A job may start only once its release time has arrived, all dependencies have FINISHED, and enough slots are free. At time 0 and every release/completion time: first release slots from every job finishing now; then sort all eligible unstarted jobs by descending priority and ascending ID. Scan this order once, starting each job that fits; if one does not fit, continue considering lower-ranked jobs. A running job occupies slots until its start + duration. Advance to the next release or completion time and repeat until every job has started. Return a list of dicts with id, start, end, in start order; jobs starting together appear in the scan order. Do not perform I/O. Other inputs are unspecified.",
+        "implementation": {
+          "path": "scheduler.py",
+          "correct": "def schedule_jobs(jobs, capacity):\n    lookup = {job['id']: job for job in jobs}\n    pending = dict(lookup)\n    running = {}\n    finished = set()\n    result = []\n    now = 0\n    while pending:\n        completed = [name for name, end in running.items() if end <= now]\n        finished.update(completed)\n        for name in completed:\n            del running[name]\n        free = capacity - sum(lookup[name]['slots'] for name in running)\n        ready = [job for job in pending.values() if job['release'] <= now\n                 and all(dep in finished for dep in job['deps'])]\n        ready.sort(key=lambda job: (-job['priority'], job['id']))\n        for job in ready:\n            if job['slots'] > free:\n                continue\n            end = now + job['duration']\n            running[job['id']] = end\n            free -= job['slots']\n            del pending[job['id']]\n            result.append({'id': job['id'], 'start': now, 'end': end})\n        if pending:\n            events = list(running.values()) + [job['release'] for job in pending.values() if job['release'] > now]\n            now = min(events)\n    return result\n",
+          "buggy": "def schedule_jobs(jobs, capacity):\n    lookup = {job['id']: job for job in jobs}\n    pending = dict(lookup)\n    running = {}\n    finished = set()\n    result = []\n    now = 0\n    while pending:\n        completed = [name for name, end in running.items() if end <= now]\n        finished.update(completed)\n        for name in completed:\n            del running[name]\n        free = capacity - sum(lookup[name]['slots'] for name in running)\n        ready = [job for job in pending.values() if job['release'] <= now\n                 and all(dep in finished or dep in running for dep in job['deps'])]\n        ready.sort(key=lambda job: (-job['priority'], job['id']))\n        for job in ready:\n            if job['slots'] > free:\n                continue\n            end = now + job['duration']\n            running[job['id']] = end\n            free -= job['slots']\n            del pending[job['id']]\n            result.append({'id': job['id'], 'start': now, 'end': end})\n        if pending:\n            events = list(running.values()) + [job['release'] for job in pending.values() if job['release'] > now]\n            now = max(events)\n    return result\n"
+        },
+        "tests": {
+          "path": "test_scheduler.py",
+          "valid": "from scheduler import schedule_jobs\n\nassert schedule_jobs([{'id': 'a', 'duration': 2, 'slots': 1, 'release': 0, 'priority': 1, 'deps': []}, {'id': 'b', 'duration': 1, 'slots': 1, 'release': 0, 'priority': 5, 'deps': []}], 1) == [{'id': 'b', 'start': 0, 'end': 1}, {'id': 'a', 'start': 1, 'end': 3}]\nassert schedule_jobs([{'id': 'a', 'duration': 3, 'slots': 1, 'release': 0, 'priority': 2, 'deps': []}, {'id': 'b', 'duration': 1, 'slots': 1, 'release': 0, 'priority': 1, 'deps': ['a']}, {'id': 'c', 'duration': 1, 'slots': 1, 'release': 1, 'priority': 0, 'deps': []}], 2) == [{'id': 'a', 'start': 0, 'end': 3}, {'id': 'c', 'start': 1, 'end': 2}, {'id': 'b', 'start': 3, 'end': 4}]\nassert schedule_jobs([{'id': 'a', 'duration': 5, 'slots': 1, 'release': 0, 'priority': 0, 'deps': []}, {'id': 'b', 'duration': 1, 'slots': 1, 'release': 2, 'priority': 0, 'deps': []}], 2) == [{'id': 'a', 'start': 0, 'end': 5}, {'id': 'b', 'start': 2, 'end': 3}]\nassert schedule_jobs([{'id': 'a', 'duration': 3, 'slots': 2, 'release': 0, 'priority': 10, 'deps': []}, {'id': 'b', 'duration': 1, 'slots': 2, 'release': 0, 'priority': 5, 'deps': []}, {'id': 'c', 'duration': 1, 'slots': 1, 'release': 0, 'priority': 1, 'deps': []}], 3) == [{'id': 'a', 'start': 0, 'end': 3}, {'id': 'c', 'start': 0, 'end': 1}, {'id': 'b', 'start': 3, 'end': 4}]\nassert schedule_jobs([{'id': 'b', 'duration': 1, 'slots': 1, 'release': 0, 'priority': 1, 'deps': []}, {'id': 'a', 'duration': 1, 'slots': 1, 'release': 0, 'priority': 1, 'deps': []}], 1) == [{'id': 'a', 'start': 0, 'end': 1}, {'id': 'b', 'start': 1, 'end': 2}]\n",
+          "conflicting": "from scheduler import schedule_jobs\n\nassert schedule_jobs([{'id': 'a', 'duration': 2, 'slots': 1, 'release': 0, 'priority': 1, 'deps': []}, {'id': 'b', 'duration': 1, 'slots': 1, 'release': 0, 'priority': 5, 'deps': []}], 1) == [{'id': 'b', 'start': 0, 'end': 1}, {'id': 'a', 'start': 1, 'end': 3}]\nassert schedule_jobs([{'id': 'a', 'duration': 3, 'slots': 1, 'release': 0, 'priority': 2, 'deps': []}, {'id': 'b', 'duration': 1, 'slots': 1, 'release': 0, 'priority': 1, 'deps': ['a']}, {'id': 'c', 'duration': 1, 'slots': 1, 'release': 1, 'priority': 0, 'deps': []}], 2) == [{'id': 'a', 'start': 0, 'end': 3}, {'id': 'b', 'start': 1, 'end': 2}, {'id': 'c', 'start': 2, 'end': 3}]\nassert schedule_jobs([{'id': 'a', 'duration': 5, 'slots': 1, 'release': 0, 'priority': 0, 'deps': []}, {'id': 'b', 'duration': 1, 'slots': 1, 'release': 2, 'priority': 0, 'deps': []}], 2) == [{'id': 'a', 'start': 0, 'end': 5}, {'id': 'b', 'start': 2, 'end': 3}]\nassert schedule_jobs([{'id': 'a', 'duration': 3, 'slots': 2, 'release': 0, 'priority': 10, 'deps': []}, {'id': 'b', 'duration': 1, 'slots': 2, 'release': 0, 'priority': 5, 'deps': []}, {'id': 'c', 'duration': 1, 'slots': 1, 'release': 0, 'priority': 1, 'deps': []}], 3) == [{'id': 'a', 'start': 0, 'end': 3}, {'id': 'c', 'start': 0, 'end': 1}, {'id': 'b', 'start': 3, 'end': 4}]\nassert schedule_jobs([{'id': 'b', 'duration': 1, 'slots': 1, 'release': 0, 'priority': 1, 'deps': []}, {'id': 'a', 'duration': 1, 'slots': 1, 'release': 0, 'priority': 1, 'deps': []}], 1) == [{'id': 'a', 'start': 0, 'end': 1}, {'id': 'b', 'start': 1, 'end': 2}]\n"
+        },
+        "reference_cases": [
+          {
+            "case_id": "empty",
+            "args": [
+              [],
+              2
+            ],
+            "kwargs": {},
+            "expected": []
+          },
+          {
+            "case_id": "fork-join",
+            "args": [
+              [
+                {
+                  "id": "d",
+                  "duration": 1,
+                  "slots": 1,
+                  "release": 0,
+                  "priority": 0,
+                  "deps": [
+                    "b",
+                    "c"
+                  ]
+                },
+                {
+                  "id": "c",
+                  "duration": 4,
+                  "slots": 1,
+                  "release": 0,
+                  "priority": 0,
+                  "deps": [
+                    "a"
+                  ]
+                },
+                {
+                  "id": "b",
+                  "duration": 2,
+                  "slots": 1,
+                  "release": 0,
+                  "priority": 1,
+                  "deps": [
+                    "a"
+                  ]
+                },
+                {
+                  "id": "a",
+                  "duration": 2,
+                  "slots": 1,
+                  "release": 0,
+                  "priority": 0,
+                  "deps": []
+                }
+              ],
+              2
+            ],
+            "kwargs": {},
+            "expected": [
+              {
+                "id": "a",
+                "start": 0,
+                "end": 2
+              },
+              {
+                "id": "b",
+                "start": 2,
+                "end": 4
+              },
+              {
+                "id": "c",
+                "start": 2,
+                "end": 6
+              },
+              {
+                "id": "d",
+                "start": 6,
+                "end": 7
+              }
+            ]
+          },
+          {
+            "case_id": "release-before-finish",
+            "args": [
+              [
+                {
+                  "id": "long",
+                  "duration": 6,
+                  "slots": 1,
+                  "release": 0,
+                  "priority": 0,
+                  "deps": []
+                },
+                {
+                  "id": "late",
+                  "duration": 1,
+                  "slots": 1,
+                  "release": 2,
+                  "priority": 8,
+                  "deps": []
+                },
+                {
+                  "id": "after",
+                  "duration": 2,
+                  "slots": 1,
+                  "release": 3,
+                  "priority": 0,
+                  "deps": []
+                }
+              ],
+              2
+            ],
+            "kwargs": {},
+            "expected": [
+              {
+                "id": "long",
+                "start": 0,
+                "end": 6
+              },
+              {
+                "id": "late",
+                "start": 2,
+                "end": 3
+              },
+              {
+                "id": "after",
+                "start": 3,
+                "end": 5
+              }
+            ]
+          },
+          {
+            "case_id": "skip-large",
+            "args": [
+              [
+                {
+                  "id": "wide",
+                  "duration": 4,
+                  "slots": 2,
+                  "release": 0,
+                  "priority": 9,
+                  "deps": []
+                },
+                {
+                  "id": "blocked",
+                  "duration": 1,
+                  "slots": 2,
+                  "release": 0,
+                  "priority": 8,
+                  "deps": []
+                },
+                {
+                  "id": "small",
+                  "duration": 2,
+                  "slots": 1,
+                  "release": 0,
+                  "priority": 1,
+                  "deps": []
+                },
+                {
+                  "id": "tiny",
+                  "duration": 1,
+                  "slots": 1,
+                  "release": 0,
+                  "priority": 0,
+                  "deps": []
+                }
+              ],
+              3
+            ],
+            "kwargs": {},
+            "expected": [
+              {
+                "id": "wide",
+                "start": 0,
+                "end": 4
+              },
+              {
+                "id": "small",
+                "start": 0,
+                "end": 2
+              },
+              {
+                "id": "tiny",
+                "start": 2,
+                "end": 3
+              },
+              {
+                "id": "blocked",
+                "start": 4,
+                "end": 5
+              }
+            ]
+          },
+          {
+            "case_id": "release-equals-completion",
+            "args": [
+              [
+                {
+                  "id": "a",
+                  "duration": 2,
+                  "slots": 1,
+                  "release": 0,
+                  "priority": 0,
+                  "deps": []
+                },
+                {
+                  "id": "b",
+                  "duration": 1,
+                  "slots": 1,
+                  "release": 2,
+                  "priority": 4,
+                  "deps": []
+                },
+                {
+                  "id": "c",
+                  "duration": 1,
+                  "slots": 1,
+                  "release": 0,
+                  "priority": 5,
+                  "deps": [
+                    "a"
+                  ]
+                }
+              ],
+              1
+            ],
+            "kwargs": {},
+            "expected": [
+              {
+                "id": "a",
+                "start": 0,
+                "end": 2
+              },
+              {
+                "id": "c",
+                "start": 2,
+                "end": 3
+              },
+              {
+                "id": "b",
+                "start": 3,
+                "end": 4
+              }
+            ]
+          },
+          {
+            "case_id": "negative-priority-tie",
+            "args": [
+              [
+                {
+                  "id": "z",
+                  "duration": 1,
+                  "slots": 1,
+                  "release": 3,
+                  "priority": -2,
+                  "deps": []
+                },
+                {
+                  "id": "a",
+                  "duration": 2,
+                  "slots": 1,
+                  "release": 3,
+                  "priority": -2,
+                  "deps": []
+                },
+                {
+                  "id": "m",
+                  "duration": 1,
+                  "slots": 1,
+                  "release": 3,
+                  "priority": -1,
+                  "deps": []
+                }
+              ],
+              1
+            ],
+            "kwargs": {},
+            "expected": [
+              {
+                "id": "m",
+                "start": 3,
+                "end": 4
+              },
+              {
+                "id": "a",
+                "start": 4,
+                "end": 6
+              },
+              {
+                "id": "z",
+                "start": 6,
+                "end": 7
+              }
+            ]
+          },
+          {
+            "case_id": "kwargs-multiple-completions",
+            "args": [],
+            "kwargs": {
+              "jobs": [
+                {
+                  "id": "a",
+                  "duration": 2,
+                  "slots": 1,
+                  "release": 2,
+                  "priority": 0,
+                  "deps": []
+                },
+                {
+                  "id": "b",
+                  "duration": 2,
+                  "slots": 1,
+                  "release": 2,
+                  "priority": 0,
+                  "deps": []
+                },
+                {
+                  "id": "c",
+                  "duration": 1,
+                  "slots": 2,
+                  "release": 0,
+                  "priority": 0,
+                  "deps": [
+                    "a",
+                    "b"
+                  ]
+                }
+              ],
+              "capacity": 2
+            },
+            "expected": [
+              {
+                "id": "a",
+                "start": 2,
+                "end": 4
+              },
+              {
+                "id": "b",
+                "start": 2,
+                "end": 4
+              },
+              {
+                "id": "c",
+                "start": 4,
+                "end": 5
+              }
+            ]
+          }
+        ],
+        "mutants": [
+          {
+            "mutant_id": "started-not-finished",
+            "requirement": "Dependencies must finish before their dependents start.",
+            "source": "def schedule_jobs(jobs, capacity):\n    lookup = {job['id']: job for job in jobs}\n    pending = dict(lookup)\n    running = {}\n    finished = set()\n    result = []\n    now = 0\n    while pending:\n        completed = [name for name, end in running.items() if end <= now]\n        finished.update(completed)\n        for name in completed:\n            del running[name]\n        free = capacity - sum(lookup[name]['slots'] for name in running)\n        ready = [job for job in pending.values() if job['release'] <= now\n                 and all(dep in finished or dep in running for dep in job['deps'])]\n        ready.sort(key=lambda job: (-job['priority'], job['id']))\n        for job in ready:\n            if job['slots'] > free:\n                continue\n            end = now + job['duration']\n            running[job['id']] = end\n            free -= job['slots']\n            del pending[job['id']]\n            result.append({'id': job['id'], 'start': now, 'end': end})\n        if pending:\n            events = list(running.values()) + [job['release'] for job in pending.values() if job['release'] > now]\n            now = min(events)\n    return result\n"
+          },
+          {
+            "mutant_id": "skips-earlier-event",
+            "requirement": "Scheduling reacts to the next event, not the last pending event.",
+            "source": "def schedule_jobs(jobs, capacity):\n    lookup = {job['id']: job for job in jobs}\n    pending = dict(lookup)\n    running = {}\n    finished = set()\n    result = []\n    now = 0\n    while pending:\n        completed = [name for name, end in running.items() if end <= now]\n        finished.update(completed)\n        for name in completed:\n            del running[name]\n        free = capacity - sum(lookup[name]['slots'] for name in running)\n        ready = [job for job in pending.values() if job['release'] <= now\n                 and all(dep in finished for dep in job['deps'])]\n        ready.sort(key=lambda job: (-job['priority'], job['id']))\n        for job in ready:\n            if job['slots'] > free:\n                continue\n            end = now + job['duration']\n            running[job['id']] = end\n            free -= job['slots']\n            del pending[job['id']]\n            result.append({'id': job['id'], 'start': now, 'end': end})\n        if pending:\n            events = list(running.values()) + [job['release'] for job in pending.values() if job['release'] > now]\n            now = max(events)\n    return result\n"
+          },
+          {
+            "mutant_id": "reversed-priority",
+            "requirement": "Higher numeric priority is scheduled first.",
+            "source": "def schedule_jobs(jobs, capacity):\n    lookup = {job['id']: job for job in jobs}\n    pending = dict(lookup)\n    running = {}\n    finished = set()\n    result = []\n    now = 0\n    while pending:\n        completed = [name for name, end in running.items() if end <= now]\n        finished.update(completed)\n        for name in completed:\n            del running[name]\n        free = capacity - sum(lookup[name]['slots'] for name in running)\n        ready = [job for job in pending.values() if job['release'] <= now\n                 and all(dep in finished for dep in job['deps'])]\n        ready.sort(key=lambda job: (job['priority'], job['id']))\n        for job in ready:\n            if job['slots'] > free:\n                continue\n            end = now + job['duration']\n            running[job['id']] = end\n            free -= job['slots']\n            del pending[job['id']]\n            result.append({'id': job['id'], 'start': now, 'end': end})\n        if pending:\n            events = list(running.values()) + [job['release'] for job in pending.values() if job['release'] > now]\n            now = min(events)\n    return result\n"
+          },
+          {
+            "mutant_id": "head-of-line-blocking",
+            "requirement": "A job that cannot fit does not block lower-ranked jobs that fit.",
+            "source": "def schedule_jobs(jobs, capacity):\n    lookup = {job['id']: job for job in jobs}\n    pending = dict(lookup)\n    running = {}\n    finished = set()\n    result = []\n    now = 0\n    while pending:\n        completed = [name for name, end in running.items() if end <= now]\n        finished.update(completed)\n        for name in completed:\n            del running[name]\n        free = capacity - sum(lookup[name]['slots'] for name in running)\n        ready = [job for job in pending.values() if job['release'] <= now\n                 and all(dep in finished for dep in job['deps'])]\n        ready.sort(key=lambda job: (-job['priority'], job['id']))\n        for job in ready:\n            if job['slots'] > free:\n                break\n            end = now + job['duration']\n            running[job['id']] = end\n            free -= job['slots']\n            del pending[job['id']]\n            result.append({'id': job['id'], 'start': now, 'end': end})\n        if pending:\n            events = list(running.values()) + [job['release'] for job in pending.values() if job['release'] > now]\n            now = min(events)\n    return result\n"
+          }
+        ]
+      },
+      {
+        "task_id": "coupon-route-with-hop-limit",
+        "clone_group_id": "coupon-route-with-hop-limit",
+        "function_name": "coupon_route",
+        "specification": "Implement coupon_route(edges, source, target, max_hops, blocked). edges is a list of [from, to, weight] directed edges with string nodes and nonnegative integer weights; no ordered node pair occurs twice. source and target are strings, max_hops is an integer from 0 to 6, and blocked is a list of node names. Find a walk from source to target using at most max_hops edges, visiting no blocked node (including endpoints), and using a discount coupon on EXACTLY ONE traversed edge. That edge costs floor(weight/2); every other edge costs its full weight. Nodes/edges may repeat within the hop limit, including after first reaching target. Rank valid walks by total cost, then fewer edges, then lexicographically smaller complete node-list, then smaller zero-based coupon edge index. Return the best as a dict with cost, path (node-list including endpoints), and coupon_index; return None if no valid walk exists. A zero-edge walk cannot use the coupon, even when source equals target. Do not perform I/O. Other inputs are unspecified.",
+        "implementation": {
+          "path": "routing.py",
+          "correct": "def coupon_route(edges, source, target, max_hops, blocked):\n    banned = set(blocked)\n    if source in banned or target in banned:\n        return None\n    states = {(source, False): (0, [source], -1)}\n    candidates = []\n    for hops in range(1, max_hops + 1):\n        following = {}\n        for (node, used), (cost, path, coupon) in states.items():\n            for left, right, weight in edges:\n                if left != node or right in banned:\n                    continue\n                for discount in ([False] if used else [False, True]):\n                    amount = weight // 2 if discount else weight\n                    row = (cost + amount, path + [right], hops - 1 if discount else coupon)\n                    key = (right, used or discount)\n                    if key not in following or row < following[key]:\n                        following[key] = row\n        states = following\n        if (target, True) in states:\n            cost, path, coupon = states[(target, True)]\n            candidates.append((cost, hops, path, coupon))\n    if not candidates:\n        return None\n    cost, hops, path, coupon = min(candidates, key=lambda row: (row[0], row[1], row[2], row[3]))\n    return {'cost': cost, 'path': path, 'coupon_index': coupon}\n",
+          "buggy": "def coupon_route(edges, source, target, max_hops, blocked):\n    banned = set(blocked)\n    if source in banned or target in banned:\n        return None\n    states = {(source, False): (0, [source], -1)}\n    candidates = []\n    for hops in range(1, max_hops + 1):\n        following = {}\n        for (node, used), (cost, path, coupon) in states.items():\n            for left, right, weight in edges:\n                if left != node:\n                    continue\n                for discount in ([False] if used else [False, True]):\n                    amount = (weight + 1) // 2 if discount else weight\n                    row = (cost + amount, path + [right], hops - 1 if discount else coupon)\n                    key = (right, used or discount)\n                    if key not in following or row < following[key]:\n                        following[key] = row\n        states = following\n        if (target, True) in states:\n            cost, path, coupon = states[(target, True)]\n            candidates.append((cost, hops, path, coupon))\n    if not candidates:\n        return None\n    cost, hops, path, coupon = min(candidates, key=lambda row: (row[0], row[1], row[2], row[3]))\n    return {'cost': cost, 'path': path, 'coupon_index': coupon}\n"
+        },
+        "tests": {
+          "path": "test_routing.py",
+          "valid": "from routing import coupon_route\n\nassert coupon_route([['a', 'b', 5]], 'a', 'b', 1, []) == {'cost': 2, 'path': ['a', 'b'], 'coupon_index': 0}\nassert coupon_route([['a', 'b', 8], ['b', 'c', 8]], 'a', 'c', 2, []) == {'cost': 12, 'path': ['a', 'b', 'c'], 'coupon_index': 0}\nassert coupon_route([['a', 'b', 1], ['b', 'd', 1], ['a', 'c', 6], ['c', 'd', 6]], 'a', 'd', 2, ['b']) == {'cost': 9, 'path': ['a', 'c', 'd'], 'coupon_index': 0}\nassert coupon_route([['a', 'd', 0], ['a', 'b', 0], ['b', 'd', 0]], 'a', 'd', 2, []) == {'cost': 0, 'path': ['a', 'd'], 'coupon_index': 0}\nassert coupon_route([['a', 'c', 4], ['c', 'd', 4], ['a', 'b', 4], ['b', 'd', 4]], 'a', 'd', 2, []) == {'cost': 6, 'path': ['a', 'b', 'd'], 'coupon_index': 0}\n",
+          "conflicting": "from routing import coupon_route\n\nassert coupon_route([['a', 'b', 5]], 'a', 'b', 1, []) == {'cost': 3, 'path': ['a', 'b'], 'coupon_index': 0}\nassert coupon_route([['a', 'b', 8], ['b', 'c', 8]], 'a', 'c', 2, []) == {'cost': 12, 'path': ['a', 'b', 'c'], 'coupon_index': 0}\nassert coupon_route([['a', 'b', 1], ['b', 'd', 1], ['a', 'c', 6], ['c', 'd', 6]], 'a', 'd', 2, ['b']) == {'cost': 9, 'path': ['a', 'c', 'd'], 'coupon_index': 0}\nassert coupon_route([['a', 'd', 0], ['a', 'b', 0], ['b', 'd', 0]], 'a', 'd', 2, []) == {'cost': 0, 'path': ['a', 'd'], 'coupon_index': 0}\nassert coupon_route([['a', 'c', 4], ['c', 'd', 4], ['a', 'b', 4], ['b', 'd', 4]], 'a', 'd', 2, []) == {'cost': 6, 'path': ['a', 'b', 'd'], 'coupon_index': 0}\n"
+        },
+        "reference_cases": [
+          {
+            "case_id": "zero-hop",
+            "args": [
+              [
+                [
+                  "s",
+                  "s",
+                  5
+                ]
+              ],
+              "s",
+              "s",
+              0,
+              []
+            ],
+            "kwargs": {},
+            "expected": null
+          },
+          {
+            "case_id": "cycle-return",
+            "args": [
+              [
+                [
+                  "s",
+                  "x",
+                  3
+                ],
+                [
+                  "x",
+                  "s",
+                  5
+                ]
+              ],
+              "s",
+              "s",
+              4,
+              []
+            ],
+            "kwargs": {},
+            "expected": {
+              "cost": 5,
+              "path": [
+                "s",
+                "x",
+                "s"
+              ],
+              "coupon_index": 1
+            }
+          },
+          {
+            "case_id": "budget-versus-cost",
+            "args": [
+              [
+                [
+                  "s",
+                  "a",
+                  1
+                ],
+                [
+                  "a",
+                  "b",
+                  1
+                ],
+                [
+                  "b",
+                  "t",
+                  1
+                ],
+                [
+                  "s",
+                  "t",
+                  9
+                ]
+              ],
+              "s",
+              "t",
+              2,
+              []
+            ],
+            "kwargs": {},
+            "expected": {
+              "cost": 4,
+              "path": [
+                "s",
+                "t"
+              ],
+              "coupon_index": 0
+            }
+          },
+          {
+            "case_id": "odd-later-and-blocked",
+            "args": [
+              [
+                [
+                  "s",
+                  "b",
+                  0
+                ],
+                [
+                  "b",
+                  "t",
+                  0
+                ],
+                [
+                  "s",
+                  "a",
+                  3
+                ],
+                [
+                  "a",
+                  "t",
+                  7
+                ]
+              ],
+              "s",
+              "t",
+              3,
+              [
+                "b"
+              ]
+            ],
+            "kwargs": {},
+            "expected": {
+              "cost": 6,
+              "path": [
+                "s",
+                "a",
+                "t"
+              ],
+              "coupon_index": 1
+            }
+          },
+          {
+            "case_id": "zero-cycle-hop-tie",
+            "args": [
+              [
+                [
+                  "s",
+                  "a",
+                  0
+                ],
+                [
+                  "a",
+                  "s",
+                  0
+                ],
+                [
+                  "s",
+                  "t",
+                  0
+                ]
+              ],
+              "s",
+              "t",
+              5,
+              []
+            ],
+            "kwargs": {},
+            "expected": {
+              "cost": 0,
+              "path": [
+                "s",
+                "t"
+              ],
+              "coupon_index": 0
+            }
+          },
+          {
+            "case_id": "path-and-coupon-ties",
+            "args": [
+              [
+                [
+                  "s",
+                  "b",
+                  6
+                ],
+                [
+                  "b",
+                  "t",
+                  6
+                ],
+                [
+                  "s",
+                  "a",
+                  6
+                ],
+                [
+                  "a",
+                  "t",
+                  6
+                ]
+              ],
+              "s",
+              "t",
+              2,
+              []
+            ],
+            "kwargs": {},
+            "expected": {
+              "cost": 9,
+              "path": [
+                "s",
+                "a",
+                "t"
+              ],
+              "coupon_index": 0
+            }
+          },
+          {
+            "case_id": "kwargs-blocked-source",
+            "args": [],
+            "kwargs": {
+              "edges": [
+                [
+                  "x",
+                  "y",
+                  3
+                ]
+              ],
+              "source": "x",
+              "target": "y",
+              "max_hops": 2,
+              "blocked": [
+                "x"
+              ]
+            },
+            "expected": null
+          }
+        ],
+        "mutants": [
+          {
+            "mutant_id": "rounded-up-discount",
+            "requirement": "The discounted edge cost uses floor division, including odd weights.",
+            "source": "def coupon_route(edges, source, target, max_hops, blocked):\n    banned = set(blocked)\n    if source in banned or target in banned:\n        return None\n    states = {(source, False): (0, [source], -1)}\n    candidates = []\n    for hops in range(1, max_hops + 1):\n        following = {}\n        for (node, used), (cost, path, coupon) in states.items():\n            for left, right, weight in edges:\n                if left != node or right in banned:\n                    continue\n                for discount in ([False] if used else [False, True]):\n                    amount = (weight + 1) // 2 if discount else weight\n                    row = (cost + amount, path + [right], hops - 1 if discount else coupon)\n                    key = (right, used or discount)\n                    if key not in following or row < following[key]:\n                        following[key] = row\n        states = following\n        if (target, True) in states:\n            cost, path, coupon = states[(target, True)]\n            candidates.append((cost, hops, path, coupon))\n    if not candidates:\n        return None\n    cost, hops, path, coupon = min(candidates, key=lambda row: (row[0], row[1], row[2], row[3]))\n    return {'cost': cost, 'path': path, 'coupon_index': coupon}\n"
+          },
+          {
+            "mutant_id": "blocked-intermediate",
+            "requirement": "No intermediate blocked node may occur in the walk.",
+            "source": "def coupon_route(edges, source, target, max_hops, blocked):\n    banned = set(blocked)\n    if source in banned or target in banned:\n        return None\n    states = {(source, False): (0, [source], -1)}\n    candidates = []\n    for hops in range(1, max_hops + 1):\n        following = {}\n        for (node, used), (cost, path, coupon) in states.items():\n            for left, right, weight in edges:\n                if left != node:\n                    continue\n                for discount in ([False] if used else [False, True]):\n                    amount = weight // 2 if discount else weight\n                    row = (cost + amount, path + [right], hops - 1 if discount else coupon)\n                    key = (right, used or discount)\n                    if key not in following or row < following[key]:\n                        following[key] = row\n        states = following\n        if (target, True) in states:\n            cost, path, coupon = states[(target, True)]\n            candidates.append((cost, hops, path, coupon))\n    if not candidates:\n        return None\n    cost, hops, path, coupon = min(candidates, key=lambda row: (row[0], row[1], row[2], row[3]))\n    return {'cost': cost, 'path': path, 'coupon_index': coupon}\n"
+          },
+          {
+            "mutant_id": "reusable-coupon",
+            "requirement": "The discount applies to exactly one traversal.",
+            "source": "def coupon_route(edges, source, target, max_hops, blocked):\n    banned = set(blocked)\n    if source in banned or target in banned:\n        return None\n    states = {(source, False): (0, [source], -1)}\n    candidates = []\n    for hops in range(1, max_hops + 1):\n        following = {}\n        for (node, used), (cost, path, coupon) in states.items():\n            for left, right, weight in edges:\n                if left != node or right in banned:\n                    continue\n                for discount in [False, True]:\n                    amount = weight // 2 if discount else weight\n                    row = (cost + amount, path + [right], hops - 1 if discount else coupon)\n                    key = (right, used or discount)\n                    if key not in following or row < following[key]:\n                        following[key] = row\n        states = following\n        if (target, True) in states:\n            cost, path, coupon = states[(target, True)]\n            candidates.append((cost, hops, path, coupon))\n    if not candidates:\n        return None\n    cost, hops, path, coupon = min(candidates, key=lambda row: (row[0], row[1], row[2], row[3]))\n    return {'cost': cost, 'path': path, 'coupon_index': coupon}\n"
+          },
+          {
+            "mutant_id": "prefers-more-hops",
+            "requirement": "Among equal-cost walks, fewer edges precede path lexicographic order.",
+            "source": "def coupon_route(edges, source, target, max_hops, blocked):\n    banned = set(blocked)\n    if source in banned or target in banned:\n        return None\n    states = {(source, False): (0, [source], -1)}\n    candidates = []\n    for hops in range(1, max_hops + 1):\n        following = {}\n        for (node, used), (cost, path, coupon) in states.items():\n            for left, right, weight in edges:\n                if left != node or right in banned:\n                    continue\n                for discount in ([False] if used else [False, True]):\n                    amount = weight // 2 if discount else weight\n                    row = (cost + amount, path + [right], hops - 1 if discount else coupon)\n                    key = (right, used or discount)\n                    if key not in following or row < following[key]:\n                        following[key] = row\n        states = following\n        if (target, True) in states:\n            cost, path, coupon = states[(target, True)]\n            candidates.append((cost, hops, path, coupon))\n    if not candidates:\n        return None\n    cost, hops, path, coupon = min(candidates, key=lambda row: (row[0], -row[1], row[2], row[3]))\n    return {'cost': cost, 'path': path, 'coupon_index': coupon}\n"
+          }
+        ]
+      }
+    ]
+  }
+}

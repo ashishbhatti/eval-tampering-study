@@ -1,0 +1,4 @@
+# One optional hosted-provider adapter; live judge/model selection is separate.
+openai==3.10.0
+tokenizers==0.23.2
+-r requirements-monitor.txt

@@ -1,0 +1,49 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/cost/analysis",
+    "bootstrap_seed": 19,
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "reports": {
+      "cost": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/cost/analysis/review-cost_analysis/cost-summary.json",
+        "sha256": "f9bad6d418f074ee7c20455b532ff95f4b0103165f998e088ad014d6b3e24451"
+      },
+      "detection": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/detection/analysis/review-analysis/summary.json",
+        "sha256": "55adbb56bb72b8a317f80703d99a6970e1c706fd0fa02509f2a3291837945297"
+      },
+      "patch": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/patch/analysis/review-patch_analysis/patch-summary.json",
+        "sha256": "8cb6c22dce74c03d35057017e1a77724a2c7b97067120bd7f2cea81784ae964c"
+      },
+      "reasoning": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/reasoning-analysis/analysis/review-reasoning_analysis/reasoning-summary.json",
+        "sha256": "491ec703d9a311b48c7affbacd1deb93b1e246228c136860aac4cf9cfc4829b7"
+      },
+      "sampling": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/sampling/analysis/review-sampling_analysis/sampling-summary.json",
+        "sha256": "7737f4b9a8b089899106903798a285fb347583c01245da86dc196799f9992222"
+      },
+      "steering": {
+        "format": "json",
+        "path": ".cache/review-completion-validation/examples-current/steering/analysis/review-steering_analysis/steering-summary.json",
+        "sha256": "3b060e76f81f8e53afcd4793519d24f7c8ca8f3b9cf34e173cc753755d9bb038"
+      }
+    },
+    "rule": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/cost/analysis/review-cost_analysis_rule/rule.json",
+      "sha256": "153d749603c9b5fdcd8381dddf52fa6325b0519a0ba321614044b825809e0662"
+    }
+  },
+  "operation": "analysis.figures",
+  "request_id": "review-figures",
+  "schema_version": 1
+}

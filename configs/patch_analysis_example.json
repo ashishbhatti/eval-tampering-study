@@ -1,0 +1,27 @@
+{
+  "config": {
+    "artifact_root": ".cache/review-completion-validation/examples-current/patch/analysis",
+    "bootstrap_seed": 19,
+    "label_kind": "fixture"
+  },
+  "inputs": {
+    "outcomes": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/patch/patch-outcomes.json",
+      "sha256": "56a4055abe17a8be090261d2458515c9a40701a74bab616b252e7ae6ee3dc4f7"
+    },
+    "plan": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/patch/planner/episodes/patch-episodes.json",
+      "sha256": "d1a420844ab6bccdf8757b45658aecd318e50ed6e23d0b8747f3f4fd223a2b00"
+    },
+    "rule": {
+      "format": "json",
+      "path": ".cache/review-completion-validation/examples-current/patch/analysis/review-patch_analysis_rule/rule.json",
+      "sha256": "1d2ae8e22b1511a341aed83c4be415f38913c8e816752e9e54b3445a7089c115"
+    }
+  },
+  "operation": "analysis.patch",
+  "request_id": "review-patch_analysis",
+  "schema_version": 1
+}
